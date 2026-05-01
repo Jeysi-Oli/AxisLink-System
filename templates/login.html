@@ -1,0 +1,80 @@
+{% extends "base.html" %} {% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="glass-card text-center mb-5">
+            <h3 class="fw-bold mb-1" style="color: #1e3a8a">Welcome Back!</h3>
+            <p class="text-muted mb-4">
+                Please log in to your AxisLink account.
+            </p>
+
+            <!-- Display error message if authentication fails -->
+            {% if error %}
+            <div
+                class="alert alert-danger"
+                role="alert"
+                style="border-radius: 8px"
+            >
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <!-- Login form sending data to /login via POST method -->
+            <form action="/login" method="POST">
+                <!-- Email Input -->
+                <div class="mb-3 text-start">
+                    <label class="form-label fw-bold" style="color: #2c3e50"
+                        >Email Address</label
+                    >
+                    <input
+                        type="email"
+                        class="form-control"
+                        name="email"
+                        placeholder="e.g. user@email.com"
+                        required
+                        style="padding: 10px"
+                    />
+                </div>
+
+                <!-- Password Input -->
+                <div class="mb-4 text-start">
+                    <label class="form-label fw-bold" style="color: #2c3e50"
+                        >Password</label
+                    >
+                    <input
+                        type="password"
+                        class="form-control"
+                        name="password"
+                        placeholder="••••••••"
+                        required
+                        style="padding: 10px"
+                    />
+                </div>
+
+                <!-- Submit Button -->
+                <button
+                    type="submit"
+                    class="btn btn-custom-blue w-100 py-2 mb-3"
+                >
+                    Secure Login
+                </button>
+            </form>
+
+            <hr class="text-muted" />
+
+            <!-- Redirect to Registration Page -->
+            <p class="mb-0" style="font-size: 0.9rem">
+                Don't have an account yet?
+                <a
+                    href="/register"
+                    style="
+                        color: #0d6efd;
+                        font-weight: 600;
+                        text-decoration: none;
+                    "
+                    >Register here</a
+                >
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

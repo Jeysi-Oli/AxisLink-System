@@ -1,0 +1,145 @@
+{% extends "base.html" %} {% block content %}
+<div class="row mt-4">
+    <!-- LEFT COLUMN: The "Order Slip" (Job Posting Form) -->
+    <div class="col-lg-4 mb-4">
+        <div class="glass-card">
+            <h4 class="mb-4" style="color: #1e3a8a; font-weight: 700">
+                Post a New Job
+            </h4>
+            <hr />
+
+            <!-- Form sending data to /add_job via POST method -->
+            <form action="/add_job" method="POST">
+                <!-- Job Title Input -->
+                <div class="mb-3">
+                    <label class="form-label text-muted fw-bold"
+                        >Job Title</label
+                    >
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="job_title"
+                        placeholder="e.g. Senior Developer"
+                        required
+                    />
+                </div>
+
+                <!-- Job Description Input -->
+                <div class="mb-3">
+                    <label class="form-label text-muted fw-bold"
+                        >Job Description</label
+                    >
+                    <textarea
+                        class="form-control"
+                        name="job_description"
+                        rows="3"
+                        placeholder="Briefly describe the role..."
+                        required
+                    ></textarea>
+                </div>
+
+                <!-- Employment Type Dropdown -->
+                <div class="mb-4">
+                    <label class="form-label text-muted fw-bold"
+                        >Employment Type</label
+                    >
+                    <select class="form-select" name="employment_type" required>
+                        <option value="" disabled selected>
+                            Select type...
+                        </option>
+                        <option value="Full-time">Full-time</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="Internship">Internship</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-custom-blue w-100 py-2">
+                    Publish Job Posting
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Data Tables (Active Postings & Matches) -->
+    <div class="col-lg-8">
+        <!-- SECTION 1: Active Job Postings Table -->
+        <h5 class="fw-bold mb-3" style="color: #2c3e50">Active Job Postings</h5>
+
+        <div class="table-responsive mb-5">
+            <table class="table table-hover table-custom shadow-sm">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Job Title</th>
+                        <th class="text-center">Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Loop through the jobs_list passed from app.py -->
+                    {% for job in jobs_list %}
+                    <tr>
+                        <td class="fw-bold">{{ job.company_name }}</td>
+                        <td>{{ job.job_title }}</td>
+                        <td class="text-center">
+                            <span class="badge bg-secondary"
+                                >{{ job.employment_type }}</span
+                            >
+                        </td>
+                    </tr>
+                    {% else %}
+                    <!-- Empty state if no jobs exist yet -->
+                    <tr>
+                        <td colspan="3" class="text-center text-muted py-4">
+                            No active job postings yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SECTION 2: Skill-Gap Matcher Results Table -->
+        <h5 class="fw-bold mb-3" style="color: #e67e22">
+            System Match Results
+        </h5>
+
+        <div class="table-responsive">
+            <table
+                class="table table-hover table-custom shadow-sm"
+                style="border-top: 3px solid #e67e22"
+            >
+                <thead style="background-color: #e67e22; color: white">
+                    <tr>
+                        <th>Applicant Name</th>
+                        <th>Matched Skill</th>
+                        <th>Position</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Loop through the matches_list passed from app.py -->
+                    {% for match in matches_list %}
+                    <tr>
+                        <td class="fw-bold">
+                            {{ match.f_name }} {{ match.l_name }}
+                        </td>
+                        <td class="fw-bold text-success">
+                            ✓ {{ match.matched_skill }}
+                        </td>
+                        <td>{{ match.position }}</td>
+                    </tr>
+                    {% else %}
+                    <!-- Empty state if no matches exist yet -->
+                    <tr>
+                        <td colspan="3" class="text-center text-muted py-4">
+                            Waiting for skilled learners to match your job
+                            postings...
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

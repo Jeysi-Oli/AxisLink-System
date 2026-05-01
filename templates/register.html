@@ -1,0 +1,191 @@
+{% extends "base.html" %} {% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="glass-card text-center mb-5">
+            <h3 class="fw-bold mb-1" style="color: #1e3a8a">Join AxisLink</h3>
+            <p class="text-muted mb-4">Create your account to get started.</p>
+
+            <!-- Registration form sending data to /register via POST method -->
+            <form action="/register" method="POST">
+                <!-- THE BASICS: Required for all user types -->
+                <div class="mb-3 text-start">
+                    <label class="form-label fw-bold" style="color: #2c3e50"
+                        >Email Address</label
+                    >
+                    <input
+                        type="email"
+                        class="form-control"
+                        name="email"
+                        placeholder="e.g. user@email.com"
+                        required
+                        style="padding: 10px"
+                    />
+                </div>
+
+                <div class="mb-3 text-start">
+                    <label class="form-label fw-bold" style="color: #2c3e50"
+                        >Password</label
+                    >
+                    <input
+                        type="password"
+                        class="form-control"
+                        name="password"
+                        placeholder="Create a strong password"
+                        required
+                        style="padding: 10px"
+                    />
+                </div>
+
+                <!-- ROLE SELECTOR: Determines which dynamic fields to display -->
+                <div class="mb-4 text-start">
+                    <label class="form-label fw-bold" style="color: #2c3e50"
+                        >I want to register as a:</label
+                    >
+                    <select
+                        class="form-select"
+                        name="role"
+                        id="roleSelector"
+                        required
+                        style="padding: 10px"
+                    >
+                        <option value="" disabled selected>
+                            Select your role...
+                        </option>
+                        <option value="Learner">
+                            Learner (Student / Applicant)
+                        </option>
+                        <option value="Employer">
+                            Employer (Company / Institution)
+                        </option>
+                    </select>
+                </div>
+
+                <!-- DYNAMIC FIELD: Learner Information -->
+                <div
+                    id="learnerFields"
+                    class="d-none text-start mb-4 p-3"
+                    style="
+                        background-color: #f8f9fa;
+                        border-radius: 8px;
+                        border-left: 4px solid #0d6efd;
+                    "
+                >
+                    <h6 class="fw-bold text-primary mb-3">
+                        Learner Information
+                    </h6>
+                    <div class="mb-2">
+                        <label class="form-label" style="font-size: 0.9rem"
+                            >First Name</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="first_name"
+                            id="fName"
+                            placeholder="e.g. John Clarence"
+                        />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label" style="font-size: 0.9rem"
+                            >Last Name</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="last_name"
+                            id="lName"
+                            placeholder="e.g. Oli"
+                        />
+                    </div>
+                </div>
+
+                <!-- DYNAMIC FIELD: Employer Information -->
+                <div
+                    id="employerFields"
+                    class="d-none text-start mb-4 p-3"
+                    style="
+                        background-color: #f8f9fa;
+                        border-radius: 8px;
+                        border-left: 4px solid #198754;
+                    "
+                >
+                    <h6 class="fw-bold text-success mb-3">
+                        Employer Information
+                    </h6>
+                    <div class="mb-2">
+                        <label class="form-label" style="font-size: 0.9rem"
+                            >Company Name</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="company_name"
+                            id="compName"
+                            placeholder="e.g. Google Philippines"
+                        />
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button
+                    type="submit"
+                    class="btn btn-custom-blue w-100 py-2 mb-3"
+                >
+                    Create Account
+                </button>
+            </form>
+
+            <hr class="text-muted" />
+
+            <!-- Redirect to Login Page -->
+            <p class="mb-0" style="font-size: 0.9rem">
+                Already have an account?
+                <a
+                    href="/login"
+                    style="
+                        color: #0d6efd;
+                        font-weight: 600;
+                        text-decoration: none;
+                    "
+                    >Login here</a
+                >
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT LOGIC: Form toggling based on selected role -->
+<script>
+    document
+        .getElementById('roleSelector')
+        .addEventListener('change', function () {
+            var role = this.value;
+
+            // Element selections
+            var learnerBox = document.getElementById('learnerFields');
+            var employerBox = document.getElementById('employerFields');
+            var fName = document.getElementById('fName');
+            var lName = document.getElementById('lName');
+            var compName = document.getElementById('compName');
+
+            // Toggle visibility and required attributes for Learner
+            if (role === 'Learner') {
+                learnerBox.classList.remove('d-none');
+                employerBox.classList.add('d-none');
+
+                fName.required = true;
+                lName.required = true;
+                compName.required = false;
+            }
+            // Toggle visibility and required attributes for Employer
+            else if (role === 'Employer') {
+                employerBox.classList.remove('d-none');
+                learnerBox.classList.add('d-none');
+
+                compName.required = true;
+                fName.required = false;
+                lName.required = false;
+            }
+        });
+</script>
+{% endblock %}
