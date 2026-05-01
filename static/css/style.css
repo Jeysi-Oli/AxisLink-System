@@ -1,0 +1,70 @@
+/* 1. IMPORTING MODERN FONT: Using Poppins from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+/* 2. GLOBAL BODY STYLING: General website appearance */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f4f8; /* Clean, light grayish-blue background */
+    color: #2c3e50; /* Dark gray text for readability */
+}
+
+/* 3. NAVIGATION BAR: Advanced dark blue gradient */
+.navbar-custom {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Navbar Brand / Logo Styling */
+.navbar-custom .navbar-brand {
+    color: #00d2ff !important; /* Futuristic light blue text */
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* 4. GLASSMORPHISM FORM: Modern card effect for HTML forms */
+.glass-card {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(13, 110, 253, 0.1);
+    border: none;
+    transition: transform 0.3s ease;
+}
+
+/* Card Hover Effect: Lifts the form slightly when hovered */
+.glass-card:hover {
+    transform: translateY(-5px);
+}
+
+/* 5. FUTURISTIC BUTTON: Glowing Blue Effect */
+.btn-custom-blue {
+    background-color: #0d6efd;
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+    border: none;
+}
+
+/* Button Hover Effect: Darkens color and adds a glowing shadow */
+.btn-custom-blue:hover {
+    background-color: #0b5ed7;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(13, 110, 253, 0.4);
+    color: white;
+}
+
+/* 6. AESTHETIC TABLES: Clean styling for Job Postings and Match Results */
+.table-custom {
+    background-color: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Table Header Styling */
+.table-custom thead {
+    background-color: #1e3a8a; /* Deep professional blue */
+    color: white;
+}
