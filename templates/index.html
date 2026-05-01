@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>AxisLink System</title>
+    </head>
+    <body
+        style="
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #f4f6f9;
+        "
+    >
+        <h1 style="color: #2c3e50">Welcome to AxisLink! 🚀</h1>
+
+        <!-- SECTION 1: HTML Form (Ang Order Slip) -->
+        <div
+            style="
+                background-color: white;
+                width: 50%;
+                margin: 0 auto;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            "
+        >
+            <h3 style="color: #2980b9">
+                📝 Post a New Job (Google Philippines)
+            </h3>
+
+            <form action="/add_job" method="POST">
+                <label><b>Job Title:</b></label
+                ><br />
+                <input
+                    type="text"
+                    name="job_title"
+                    placeholder="e.g. Data Analyst"
+                    required
+                    style="padding: 8px; margin: 10px 0; width: 80%"
+                /><br />
+
+                <label><b>Job Description:</b></label
+                ><br />
+                <textarea
+                    name="job_description"
+                    placeholder="Briefly describe the job..."
+                    required
+                    style="
+                        padding: 8px;
+                        margin: 10px 0;
+                        width: 80%;
+                        height: 60px;
+                        font-family: Arial;
+                    "
+                ></textarea
+                ><br />
+
+                <label><b>Employment Type:</b></label
+                ><br />
+                <select
+                    name="employment_type"
+                    style="padding: 8px; margin: 10px 0; width: 80%"
+                >
+                    <option value="Full-time">Full-time</option>
+                    <option value="Part-time">Part-time</option>
+                    <option value="Internship">Internship</option></select
+                ><br />
+
+                <button
+                    type="submit"
+                    style="
+                        background-color: #27ae60;
+                        color: white;
+                        padding: 10px 20px;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-weight: bold;
+                    "
+                >
+                    Post Job
+                </button>
+            </form>
+        </div>
+
+        <!-- SECTION 2: Job Postings Table -->
+        <p style="color: #7f8c8d; margin-top: 40px">
+            Available Job Postings from our Partners
+        </p>
+        <table
+            style="
+                margin: 0 auto;
+                border-collapse: collapse;
+                width: 70%;
+                background-color: white;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            "
+        >
+            <tr style="background-color: #3498db; color: white">
+                <th style="padding: 12px; border: 1px solid #ddd">Company</th>
+                <th style="padding: 12px; border: 1px solid #ddd">Job Title</th>
+                <th style="padding: 12px; border: 1px solid #ddd">Type</th>
+            </tr>
+            {% for job in jobs_list %}
+            <tr style="text-align: left">
+                <td style="padding: 12px; border: 1px solid #ddd">
+                    <b>{{ job.company_name }}</b>
+                </td>
+                <td style="padding: 12px; border: 1px solid #ddd">
+                    {{ job.job_title }}
+                </td>
+                <td
+                    style="
+                        padding: 12px;
+                        border: 1px solid #ddd;
+                        text-align: center;
+                    "
+                >
+                    {{ job.employment_type }}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <!-- SECTION 3: Skill-Gap Matcher Results Table -->
+        <p style="color: #e67e22; margin-top: 50px; font-weight: bold">
+            ⚡ System Match Results
+        </p>
+        <table
+            style="
+                margin: 0 auto;
+                border-collapse: collapse;
+                width: 70%;
+                background-color: white;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                margin-bottom: 50px;
+            "
+        >
+            <tr style="background-color: #e67e22; color: white">
+                <th style="padding: 12px; border: 1px solid #ddd">
+                    Applicant Name
+                </th>
+                <th style="padding: 12px; border: 1px solid #ddd">
+                    Matched Skill
+                </th>
+                <th style="padding: 12px; border: 1px solid #ddd">
+                    Target Company
+                </th>
+                <th style="padding: 12px; border: 1px solid #ddd">
+                    Target Position
+                </th>
+            </tr>
+            {% for match in matches_list %}
+            <tr style="text-align: left">
+                <td style="padding: 12px; border: 1px solid #ddd">
+                    <b>{{ match.f_name }} {{ match.l_name }}</b>
+                </td>
+                <td
+                    style="
+                        padding: 12px;
+                        border: 1px solid #ddd;
+                        color: #27ae60;
+                        font-weight: bold;
+                    "
+                >
+                    {{ match.matched_skill }}
+                </td>
+                <td style="padding: 12px; border: 1px solid #ddd">
+                    {{ match.company }}
+                </td>
+                <td style="padding: 12px; border: 1px solid #ddd">
+                    {{ match.position }}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </body>
+</html>
