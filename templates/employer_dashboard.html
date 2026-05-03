@@ -1,6 +1,15 @@
+<!-- ======================================================================= -->
+<!-- MODULE: employer_dashboard.html                                         -->
+<!-- DESCRIPTION: Serves as the primary user interface for authenticated     -->
+<!--              employers. Provides data entry for job creation and visual -->
+<!--              representation of active postings and candidate matches.   -->
+<!-- ======================================================================= -->
+
 {% extends "base.html" %} {% block content %}
 <div class="row mt-4">
-    <!-- LEFT COLUMN: The "Order Slip" (Job Posting Form) -->
+    <!-- ========================================== -->
+    <!-- SECTION 1: JOB CREATION MODULE             -->
+    <!-- ========================================== -->
     <div class="col-lg-4 mb-4">
         <div class="glass-card">
             <h4 class="mb-4" style="color: #1e3a8a; font-weight: 700">
@@ -8,9 +17,9 @@
             </h4>
             <hr />
 
-            <!-- Form sending data to /add_job via POST method -->
+            <!-- Transmits structured form data to the /add_job endpoint -->
             <form action="/add_job" method="POST">
-                <!-- Job Title Input -->
+                <!-- Input field for Job Title -->
                 <div class="mb-3">
                     <label class="form-label text-muted fw-bold"
                         >Job Title</label
@@ -24,7 +33,7 @@
                     />
                 </div>
 
-                <!-- Job Description Input -->
+                <!-- Input field for Job Description -->
                 <div class="mb-3">
                     <label class="form-label text-muted fw-bold"
                         >Job Description</label
@@ -38,7 +47,7 @@
                     ></textarea>
                 </div>
 
-                <!-- Employment Type Dropdown -->
+                <!-- Input selection for Employment Type -->
                 <div class="mb-4">
                     <label class="form-label text-muted fw-bold"
                         >Employment Type</label
@@ -53,7 +62,7 @@
                     </select>
                 </div>
 
-                <!-- Submit Button -->
+                <!-- Submission Execution -->
                 <button type="submit" class="btn btn-custom-blue w-100 py-2">
                     Publish Job Posting
                 </button>
@@ -61,9 +70,11 @@
         </div>
     </div>
 
-    <!-- RIGHT COLUMN: Data Tables (Active Postings & Matches) -->
+    <!-- ========================================== -->
+    <!-- SECTION 2: DATA VISUALIZATION TABLES       -->
+    <!-- ========================================== -->
     <div class="col-lg-8">
-        <!-- SECTION 1: Active Job Postings Table -->
+        <!-- --- SUB-SECTION A: Active Job Postings --- -->
         <h5 class="fw-bold mb-3" style="color: #2c3e50">Active Job Postings</h5>
 
         <div class="table-responsive mb-5">
@@ -76,7 +87,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Loop through the jobs_list passed from app.py -->
+                    <!-- Iterates over the jobs_list collection provided by the backend controller -->
                     {% for job in jobs_list %}
                     <tr>
                         <td class="fw-bold">{{ job.company_name }}</td>
@@ -88,7 +99,7 @@
                         </td>
                     </tr>
                     {% else %}
-                    <!-- Empty state if no jobs exist yet -->
+                    <!-- Fallback UI state when the jobs collection is empty -->
                     <tr>
                         <td colspan="3" class="text-center text-muted py-4">
                             No active job postings yet.
@@ -99,7 +110,7 @@
             </table>
         </div>
 
-        <!-- SECTION 2: Skill-Gap Matcher Results Table -->
+        <!-- --- SUB-SECTION B: Skill-Gap Matcher Results --- -->
         <h5 class="fw-bold mb-3" style="color: #e67e22">
             System Match Results
         </h5>
@@ -117,7 +128,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Loop through the matches_list passed from app.py -->
+                    <!-- Iterates over the matches_list collection provided by the backend controller -->
                     {% for match in matches_list %}
                     <tr>
                         <td class="fw-bold">
@@ -129,7 +140,7 @@
                         <td>{{ match.position }}</td>
                     </tr>
                     {% else %}
-                    <!-- Empty state if no matches exist yet -->
+                    <!-- Fallback UI state when no cross-referenced matches are found -->
                     <tr>
                         <td colspan="3" class="text-center text-muted py-4">
                             Waiting for skilled learners to match your job
