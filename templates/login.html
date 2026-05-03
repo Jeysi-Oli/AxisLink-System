@@ -1,3 +1,9 @@
+<!-- ======================================================================= -->
+<!-- MODULE: login.html                                                      -->
+<!-- DESCRIPTION: User authentication interface. Captures credentials for    -->
+<!--              session initiation and renders security validation alerts. -->
+<!-- ======================================================================= -->
+
 {% extends "base.html" %} {% block content %}
 <div class="row justify-content-center mt-5">
     <div class="col-md-5">
@@ -7,7 +13,11 @@
                 Please log in to your AxisLink account.
             </p>
 
-            <!-- Display error message if authentication fails -->
+            <!-- ========================================== -->
+            <!-- AUTHENTICATION FEEDBACK COMPONENT          -->
+            <!-- ========================================== -->
+
+            <!-- Render alert banner for authentication or validation failures -->
             {% if error %}
             <div
                 class="alert alert-danger"
@@ -18,9 +28,13 @@
             </div>
             {% endif %}
 
-            <!-- Login form sending data to /login via POST method -->
+            <!-- ========================================== -->
+            <!-- CREDENTIAL SUBMISSION PAYLOAD              -->
+            <!-- ========================================== -->
+
+            <!-- Transmits authentication payload to the /login endpoint -->
             <form action="/login" method="POST">
-                <!-- Email Input -->
+                <!-- Primary identity credential input -->
                 <div class="mb-3 text-start">
                     <label class="form-label fw-bold" style="color: #2c3e50"
                         >Email Address</label
@@ -35,7 +49,7 @@
                     />
                 </div>
 
-                <!-- Password Input -->
+                <!-- Secure passphrase input -->
                 <div class="mb-4 text-start">
                     <label class="form-label fw-bold" style="color: #2c3e50"
                         >Password</label
@@ -50,7 +64,7 @@
                     />
                 </div>
 
-                <!-- Submit Button -->
+                <!-- Authentication execution trigger -->
                 <button
                     type="submit"
                     class="btn btn-custom-blue w-100 py-2 mb-3"
@@ -61,7 +75,11 @@
 
             <hr class="text-muted" />
 
-            <!-- Redirect to Registration Page -->
+            <!-- ========================================== -->
+            <!-- ACCOUNT PROVISIONING ROUTE                 -->
+            <!-- ========================================== -->
+
+            <!-- Navigation path for unauthenticated users requiring account creation -->
             <p class="mb-0" style="font-size: 0.9rem">
                 Don't have an account yet?
                 <a
