@@ -1,3 +1,10 @@
+<!-- ======================================================================= -->
+<!-- MODULE: register.html                                                   -->
+<!-- DESCRIPTION: User registration interface featuring dynamic form fields. -->
+<!--              Utilizes client-side scripting to adapt the UI payload     -->
+<!--              requirements based on the selected user identity role.     -->
+<!-- ======================================================================= -->
+
 {% extends "base.html" %} {% block content %}
 <div class="row justify-content-center mt-5">
     <div class="col-md-5">
@@ -5,9 +12,13 @@
             <h3 class="fw-bold mb-1" style="color: #1e3a8a">Join AxisLink</h3>
             <p class="text-muted mb-4">Create your account to get started.</p>
 
-            <!-- Registration form sending data to /register via POST method -->
+            <!-- ========================================== -->
+            <!-- REGISTRATION PAYLOAD FORM                  -->
+            <!-- ========================================== -->
+
+            <!-- Transmits registration payload to the /register endpoint -->
             <form action="/register" method="POST">
-                <!-- THE BASICS: Required for all user types -->
+                <!-- Base authentication credentials required for all entity types -->
                 <div class="mb-3 text-start">
                     <label class="form-label fw-bold" style="color: #2c3e50"
                         >Email Address</label
@@ -36,7 +47,11 @@
                     />
                 </div>
 
-                <!-- ROLE SELECTOR: Determines which dynamic fields to display -->
+                <!-- ========================================== -->
+                <!-- CONDITIONAL ROLE SELECTION                 -->
+                <!-- ========================================== -->
+
+                <!-- Role selection dropdown: Dictates conditional rendering of subsequent fields -->
                 <div class="mb-4 text-start">
                     <label class="form-label fw-bold" style="color: #2c3e50"
                         >I want to register as a:</label
@@ -60,7 +75,11 @@
                     </select>
                 </div>
 
-                <!-- DYNAMIC FIELD: Learner Information -->
+                <!-- ========================================== -->
+                <!-- DYNAMIC ENTITY FIELDS                      -->
+                <!-- ========================================== -->
+
+                <!-- Identity Sub-Form: Learner Data -->
                 <div
                     id="learnerFields"
                     class="d-none text-start mb-4 p-3"
@@ -99,7 +118,7 @@
                     </div>
                 </div>
 
-                <!-- DYNAMIC FIELD: Employer Information -->
+                <!-- Identity Sub-Form: Employer Data -->
                 <div
                     id="employerFields"
                     class="d-none text-start mb-4 p-3"
@@ -126,7 +145,7 @@
                     </div>
                 </div>
 
-                <!-- Submit Button -->
+                <!-- Registration execution trigger -->
                 <button
                     type="submit"
                     class="btn btn-custom-blue w-100 py-2 mb-3"
@@ -137,7 +156,11 @@
 
             <hr class="text-muted" />
 
-            <!-- Redirect to Login Page -->
+            <!-- ========================================== -->
+            <!-- AUTHENTICATION REDIRECT                    -->
+            <!-- ========================================== -->
+
+            <!-- Navigation path for pre-existing accounts -->
             <p class="mb-0" style="font-size: 0.9rem">
                 Already have an account?
                 <a
@@ -154,21 +177,29 @@
     </div>
 </div>
 
-<!-- JAVASCRIPT LOGIC: Form toggling based on selected role -->
+<!-- ======================================================================= -->
+<!-- CLIENT-SIDE LOGIC                                                       -->
+<!-- ======================================================================= -->
+
 <script>
+    /**
+     * Event listener bound to the role selection dropdown.
+     * Dynamically modifies the DOM to display role-specific input fields
+     * and toggles HTML5 'required' validation attributes to ensure payload integrity.
+     */
     document
         .getElementById('roleSelector')
         .addEventListener('change', function () {
             var role = this.value;
 
-            // Element selections
+            // DOM Element References
             var learnerBox = document.getElementById('learnerFields');
             var employerBox = document.getElementById('employerFields');
             var fName = document.getElementById('fName');
             var lName = document.getElementById('lName');
             var compName = document.getElementById('compName');
 
-            // Toggle visibility and required attributes for Learner
+            // Apply visibility and validation rules for Learner entity
             if (role === 'Learner') {
                 learnerBox.classList.remove('d-none');
                 employerBox.classList.add('d-none');
@@ -177,7 +208,7 @@
                 lName.required = true;
                 compName.required = false;
             }
-            // Toggle visibility and required attributes for Employer
+            // Apply visibility and validation rules for Employer entity
             else if (role === 'Employer') {
                 employerBox.classList.remove('d-none');
                 learnerBox.classList.add('d-none');
