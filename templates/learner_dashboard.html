@@ -1,0 +1,205 @@
+<!-- ======================================================================= -->
+<!-- MODULE: learner_dashboard.html                                          -->
+<!-- DESCRIPTION: Serves as the primary user interface for authenticated     -->
+<!--              learners. Displays the personal profile, credential        -->
+<!--              management form, and available job opportunities.          -->
+<!-- ======================================================================= -->
+
+{% extends "base.html" %} {% block content %}
+<div class="row mt-4">
+    <!-- ========================================== -->
+    <!-- SECTION 1: LEARNER PROFILE CARD            -->
+    <!-- ========================================== -->
+    <div class="col-lg-4 mb-4">
+        <div class="glass-card text-center">
+            <!-- Render dynamic user avatar utilizing the initial character of the first name -->
+            <div
+                class="rounded-circle mx-auto mb-3 d-flex justify-content-center align-items-center shadow-sm"
+                style="
+                    width: 90px;
+                    height: 90px;
+                    background-color: #1e3a8a;
+                    color: white;
+                    font-size: 2.5rem;
+                    font-weight: bold;
+                "
+            >
+                {{ learner_info.first_name[0] }}
+            </div>
+
+            <!-- Render authenticated learner's full name and status badge -->
+            <h4 class="fw-bold mb-1" style="color: #1e3a8a">
+                {{ learner_info.first_name }} {{ learner_info.last_name }}
+            </h4>
+            <span
+                class="badge bg-primary mb-4 px-3 py-2"
+                style="border-radius: 20px"
+                >Registered Learner</span
+            >
+
+            <hr class="text-muted" />
+
+            <!-- Render basic contact and educational background information -->
+            <div class="text-start mt-3">
+                <p class="mb-2">
+                    <small
+                        class="text-muted fw-bold text-uppercase"
+                        style="letter-spacing: 1px"
+                        >Contact Email</small
+                    >
+                    <br />
+                    <span style="color: #2c3e50; font-weight: 500"
+                        >{{ learner_info.email }}</span
+                    >
+                </p>
+                <p class="mb-2">
+                    <small
+                        class="text-muted fw-bold text-uppercase"
+                        style="letter-spacing: 1px"
+                        >Education Level</small
+                    >
+                    <br />
+                    <span style="color: #2c3e50; font-weight: 500"
+                        >{{ learner_info.education }}</span
+                    >
+                </p>
+            </div>
+
+            <!-- Navigation endpoint for profile modification -->
+            <a
+                href="/update_profile"
+                class="btn btn-outline-primary w-100 mt-4 py-2"
+                style="border-radius: 8px"
+            >
+                Update Profile
+            </a>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECTION 2: CREDENTIAL ACQUISITION FORM     -->
+        <!-- ========================================== -->
+        <div class="glass-card mt-4 text-center">
+            <h5 class="fw-bold mb-3" style="color: #2c3e50">
+                Add a Credential
+            </h5>
+            <p class="text-muted small mb-3">
+                Prove your skills by adding your educational background or
+                certifications.
+            </p>
+
+            <!-- Form for associating new credentials with the learner's profile -->
+            <form action="/add_credential" method="POST">
+                <div class="mb-3 text-start">
+                    <select
+                        name="credential_id"
+                        class="form-select shadow-sm"
+                        style="border-radius: 8px"
+                        required
+                    >
+                        <option value="" disabled selected>
+                            Select your Certificate / Diploma...
+                        </option>
+
+                        <!-- Dynamically populate dropdown with available credentials from the database -->
+                        {% for cred in credentials_list %}
+                        <option value="{{ cred.credential_id }}">
+                            {{ cred.credential_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-custom-blue w-100 py-2">
+                    Save to My Profile
+                </button>
+            </form>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECTION 3: ACQUIRED CREDENTIALS DISPLAY    -->
+        <!-- ========================================== -->
+        <div class="glass-card mt-4">
+            <h6 class="fw-bold mb-3" style="color: #1e3a8a">
+                My Verified Credentials
+            </h6>
+
+            <ul class="list-group list-group-flush" style="border-radius: 8px">
+                <!-- Iterate through the learner's verified credentials provided by the backend -->
+                {% for my_cred in my_credentials_list %}
+                <li class="list-group-item bg-transparent px-0 border-bottom">
+                    <div class="d-flex align-items-center">
+                        <span
+                            class="badge bg-success me-3"
+                            style="border-radius: 50%"
+                            >✓</span
+                        >
+                        <strong style="color: #2c3e50; font-size: 0.9rem"
+                            >{{ my_cred.credential_name }}</strong
+                        >
+                    </div>
+                </li>
+                {% else %}
+                <!-- Fallback UI state for learners with no saved credentials -->
+                <li
+                    class="list-group-item bg-transparent px-0 text-muted small text-center border-0 py-3"
+                >
+                    No credentials added yet. Add one above to showcase your
+                    skills!
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SECTION 4: ACTIVE JOB OPPORTUNITIES        -->
+    <!-- ========================================== -->
+    <div class="col-lg-8">
+        <h5 class="fw-bold mb-3" style="color: #2c3e50">
+            Explore Opportunities
+        </h5>
+
+        <div class="table-responsive mb-5">
+            <table class="table table-hover table-custom shadow-sm">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Job Position</th>
+                        <th class="text-center">Type</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Iterate through the globally available active job postings -->
+                    {% for job in jobs_list %}
+                    <tr>
+                        <td class="fw-bold">{{ job.company_name }}</td>
+                        <td>{{ job.job_title }}</td>
+                        <td class="text-center">
+                            <span class="badge bg-secondary"
+                                >{{ job.employment_type }}</span
+                            >
+                        </td>
+                        <td class="text-center">
+                            <button
+                                class="btn btn-sm btn-success fw-bold"
+                                style="border-radius: 6px"
+                            >
+                                Apply
+                            </button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <!-- Fallback UI state when no job opportunities are available -->
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-5">
+                            No job opportunities available at the moment. Check
+                            back later!
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
