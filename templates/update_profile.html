@@ -1,0 +1,266 @@
+<!-- ======================================================================= -->
+<!-- MODULE: update_profile.html                                             -->
+<!-- DESCRIPTION: User interface for learners to modify their personal and   -->
+<!--              educational profiles. Utilizes Jinja2 templating to pre-   -->
+<!--              populate fields with existing database records.            -->
+<!-- ======================================================================= -->
+
+{% extends "base.html" %} {% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-8">
+        <div class="glass-card mb-5">
+            <!-- ========================================== -->
+            <!-- HEADER & NAVIGATION                        -->
+            <!-- ========================================== -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold m-0" style="color: #1e3a8a">
+                    Update Profile
+                </h4>
+                <a
+                    href="/learner"
+                    class="btn btn-outline-secondary btn-sm"
+                    style="border-radius: 6px"
+                    >Back to Dashboard</a
+                >
+            </div>
+
+            <hr class="text-muted mb-4" />
+
+            <!-- ========================================== -->
+            <!-- PROFILE UPDATE PAYLOAD FORM                -->
+            <!-- ========================================== -->
+
+            <!-- Transmits updated profile payload to the /update_profile endpoint -->
+            <form action="/update_profile" method="POST">
+                <!-- --- SUB-SECTION A: Personal Information --- -->
+                <h6 class="fw-bold text-primary mb-3">Personal Information</h6>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label
+                            class="form-label text-muted fw-bold"
+                            style="font-size: 0.9rem"
+                            >First Name</label
+                        >
+                        <!-- Pre-populates the input field with the user's existing data -->
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="first_name"
+                            value="{{ learner.first_name }}"
+                            required
+                        />
+                    </div>
+                    <div class="col-md-4">
+                        <label
+                            class="form-label text-muted fw-bold"
+                            style="font-size: 0.9rem"
+                            >Middle Name</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="middle_name"
+                            value="{{ learner.middle_name }}"
+                        />
+                    </div>
+                    <div class="col-md-4">
+                        <label
+                            class="form-label text-muted fw-bold"
+                            style="font-size: 0.9rem"
+                            >Last Name</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="last_name"
+                            value="{{ learner.last_name }}"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <label
+                            class="form-label text-muted fw-bold"
+                            style="font-size: 0.9rem"
+                            >Date of Birth</label
+                        >
+                        <input
+                            type="date"
+                            class="form-control"
+                            name="date_of_birth"
+                            value="{{ learner.date_of_birth }}"
+                            required
+                        />
+                    </div>
+                    <div class="col-md-4">
+                        <label
+                            class="form-label text-muted fw-bold"
+                            style="font-size: 0.9rem"
+                            >Gender</label
+                        >
+                        <select class="form-select" name="gender" required>
+                            <!-- Dynamically applies the 'selected' attribute based on the database state -->
+                            <option
+                                value="Male"
+                                {%
+                                if
+                                learner.gender=""
+                                ="Male"
+                                %}selected{%
+                                endif
+                                %}
+                            >
+                                Male
+                            </option>
+                            <option
+                                value="Female"
+                                {%
+                                if
+                                learner.gender=""
+                                ="Female"
+                                %}selected{%
+                                endif
+                                %}
+                            >
+                                Female
+                            </option>
+                            <option
+                                value="Other"
+                                {%
+                                if
+                                learner.gender=""
+                                ="Other"
+                                %}selected{%
+                                endif
+                                %}
+                            >
+                                Other
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label
+                            class="form-label text-muted fw-bold"
+                            style="font-size: 0.9rem"
+                            >Nationality</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="nationality"
+                            value="{{ learner.nationality }}"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <!-- --- SUB-SECTION B: Contact & Education Details --- -->
+                <h6 class="fw-bold text-primary mb-3 mt-4">
+                    Contact & Education Details
+                </h6>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label
+                            class="form-label text-muted fw-bold"
+                            style="font-size: 0.9rem"
+                            >Contact Number</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="contact_number"
+                            value="{{ learner.contact_number }}"
+                            required
+                        />
+                    </div>
+                    <div class="col-md-6">
+                        <label
+                            class="form-label text-muted fw-bold"
+                            style="font-size: 0.9rem"
+                            >Highest Educational Attainment</label
+                        >
+                        <select class="form-select" name="education" required>
+                            <option
+                                value="High School Diploma"
+                                {%
+                                if
+                                learner.highest_educational_attainment=""
+                                ="High School Diploma"
+                                %}selected{%
+                                endif
+                                %}
+                            >
+                                High School Diploma
+                            </option>
+                            <option
+                                value="Undergraduate (College Level)"
+                                {%
+                                if
+                                learner.highest_educational_attainment=""
+                                ="Undergraduate (College Level)"
+                                %}selected{%
+                                endif
+                                %}
+                            >
+                                Undergraduate (College Level)
+                            </option>
+                            <option
+                                value="Bachelor's Degree"
+                                {%
+                                if
+                                learner.highest_educational_attainment=""
+                                ="Bachelor's Degree"
+                                %}selected{%
+                                endif
+                                %}
+                            >
+                                Bachelor's Degree
+                            </option>
+                            <option
+                                value="Master's Degree"
+                                {%
+                                if
+                                learner.highest_educational_attainment=""
+                                ="Master's Degree"
+                                %}selected{%
+                                endif
+                                %}
+                            >
+                                Master's Degree
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label
+                        class="form-label text-muted fw-bold"
+                        style="font-size: 0.9rem"
+                        >Home Address</label
+                    >
+                    <textarea
+                        class="form-control"
+                        name="home_address"
+                        rows="2"
+                        required
+                    >
+{{ learner.home_address }}</textarea
+                    >
+                </div>
+
+                <!-- Form execution trigger -->
+                <button
+                    type="submit"
+                    class="btn btn-custom-blue w-100 py-2 mt-2"
+                >
+                    Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
