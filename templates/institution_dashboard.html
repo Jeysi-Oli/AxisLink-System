@@ -1,0 +1,198 @@
+{% extends "base.html" %} {% block content %}
+<div class="row mt-4 mb-5">
+    <div class="col-lg-4">
+        <div
+            class="glass-card mb-4 text-center shadow-sm"
+            style="border-top: 5px solid #e67e22"
+        >
+            <div
+                class="mb-3 mx-auto d-flex justify-content-center align-items-center rounded-circle shadow-sm"
+                style="
+                    width: 80px;
+                    height: 80px;
+                    background: linear-gradient(135deg, #e67e22, #d35400);
+                    color: white;
+                    font-size: 2rem;
+                    font-weight: bold;
+                "
+            >
+                {{ institution.institution_name[0] }}
+            </div>
+            <h4 class="fw-bold mb-1" style="color: #2c3e50">
+                {{ institution.institution_name }}
+            </h4>
+            <p class="text-muted small fw-bold mb-3">
+                {{ institution.email_address }}
+            </p>
+            <hr class="text-muted" />
+            <div class="text-start mb-2">
+                <p class="mb-1" style="font-size: 0.9rem">
+                    <strong style="color: #2c3e50">Accreditation:</strong>
+                    <span class="badge bg-secondary"
+                        >{{ institution.accreditation_type }}</span
+                    >
+                </p>
+            </div>
+            <a
+                href="/update_institution_profile"
+                class="btn btn-outline-warning w-100 fw-bold mt-2"
+                style="border-radius: 8px"
+            >
+                Update Institution Profile
+            </a>
+        </div>
+
+        <div
+            class="glass-card mb-4 shadow-sm"
+            style="border-top: 5px solid #1e3a8a"
+        >
+            <h5 class="fw-bold mb-3" style="color: #1e3a8a">
+                Directly Issue a Credential
+            </h5>
+            <p class="text-muted small mb-3">
+                Create and award a badge to a student in one step.
+            </p>
+            <form action="/issue_direct_credential" method="POST">
+                <div class="mb-2">
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="credential_name"
+                        placeholder="Badge Name (e.g. BSIT Diploma)"
+                        required
+                        style="border-radius: 8px"
+                    />
+                </div>
+                <div class="mb-2">
+                    <textarea
+                        class="form-control"
+                        name="credential_description"
+                        rows="2"
+                        placeholder="Description of competencies..."
+                        required
+                        style="border-radius: 8px"
+                    ></textarea>
+                </div>
+                <div class="mb-2">
+                    <input
+                        type="number"
+                        class="form-control"
+                        name="validity_years"
+                        min="0"
+                        placeholder="Validity Years (0 for Lifetime)"
+                        required
+                        style="border-radius: 8px"
+                    />
+                </div>
+
+                <div class="mb-3 text-start">
+                    <label class="form-label text-muted fw-bold small"
+                        >Map Skills to this Badge</label
+                    >
+                    <div
+                        class="border p-2 bg-white"
+                        style="
+                            border-radius: 8px;
+                            max-height: 100px;
+                            overflow-y: auto;
+                        "
+                    >
+                        {% for skill in skills %}
+                        <div class="form-check">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                name="skills"
+                                value="{{ skill.skill_id }}"
+                                id="badge_sk_{{ skill.skill_id }}"
+                            />
+                            <label
+                                class="form-check-label text-muted small"
+                                for="badge_sk_{{ skill.skill_id }}"
+                                >{{ skill.skill_name }}</label
+                            >
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <hr class="text-muted" />
+
+                <div class="mb-4">
+                    <label class="form-label text-muted fw-bold small"
+                        >Award To:</label
+                    >
+                    <input
+                        type="email"
+                        class="form-control"
+                        name="learner_email"
+                        placeholder="Student's Registered Email"
+                        required
+                        style="border-radius: 8px"
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn text-white w-100 py-2 fw-bold"
+                    style="background-color: #1e3a8a; border-radius: 8px"
+                >
+                    Create & Award Badge
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <h5 class="fw-bold mb-3" style="color: #2c3e50">
+            Our Issued Credentials Ledger
+        </h5>
+        <div class="table-responsive mb-5">
+            <table
+                class="table table-hover table-custom shadow-sm"
+                style="border-top: 3px solid #1e3a8a"
+            >
+                <thead style="background-color: #1e3a8a; color: white">
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Badge Awarded</th>
+                        <th class="text-center">Date Awarded</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for issued in issued_credentials %}
+                    <tr>
+                        <td class="fw-bold align-middle" style="color: #2c3e50">
+                            {{ issued.first_name }} {{ issued.last_name }}
+                        </td>
+                        <td class="align-middle text-success fw-bold">
+                            🎓 {{ issued.credential_name }}
+                        </td>
+                        <td class="text-center align-middle text-muted small">
+                            {{ issued.date_acquired }}
+                        </td>
+                        <td class="text-center align-middle">
+                            <a
+                                href="/revoke_issued_credential/{{ issued.learner_credential_id }}"
+                                class="btn btn-sm btn-outline-danger shadow-sm"
+                                style="border-radius: 6px"
+                            >
+                                🗑️ Revoke Badge
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">
+                            No credential records found. Use the form to
+                            directly issue a badge to a student.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
