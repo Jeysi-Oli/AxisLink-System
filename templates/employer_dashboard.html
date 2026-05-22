@@ -1,108 +1,173 @@
-<!-- ======================================================================= -->
-<!-- MODULE: employer_dashboard.html                                         -->
-<!-- DESCRIPTION: Serves as the primary user interface for authenticated     -->
-<!--              employers. Provides data entry for job creation and visual -->
-<!--              representation of active postings and candidate matches.   -->
-<!-- ======================================================================= -->
-
 {% extends "base.html" %} {% block content %}
-<div class="row mt-4">
-    <!-- ========================================== -->
-    <!-- SECTION 1: JOB CREATION MODULE             -->
-    <!-- ========================================== -->
+<div class="row mt-4 mb-5">
     <div class="col-lg-4 mb-4">
-        <div class="glass-card">
-            <h4 class="mb-4" style="color: #1e3a8a; font-weight: 700">
-                Post a New Job
+        <div
+            class="glass-card mb-4 text-center shadow-sm"
+            style="border-top: 5px solid #198754"
+        >
+            <div
+                class="mb-3 mx-auto d-flex justify-content-center align-items-center rounded-circle shadow-sm"
+                style="
+                    width: 80px;
+                    height: 80px;
+                    background: linear-gradient(135deg, #198754, #27ae60);
+                    color: white;
+                    font-size: 2rem;
+                    font-weight: bold;
+                "
+            >
+                {{ employer.company_name[0] }}
+            </div>
+            <h4 class="fw-bold mb-1" style="color: #2c3e50">
+                {{ employer.company_name }}
             </h4>
-            <hr />
+            <p class="text-muted small fw-bold mb-3">
+                {{ employer.email_address }}
+            </p>
+            <a
+                href="/update_employer_profile"
+                class="btn btn-outline-success w-100 fw-bold"
+                style="border-radius: 8px"
+            >
+                Update Company Profile
+            </a>
+        </div>
 
-            <!-- Transmits structured form data to the /add_job endpoint -->
+        <div class="glass-card shadow-sm" style="border-top: 5px solid #198754">
+            <h5 class="fw-bold mb-3" style="color: #198754">Post a New Job</h5>
             <form action="/add_job" method="POST">
-                <!-- Input field for Job Title -->
                 <div class="mb-3">
-                    <label class="form-label text-muted fw-bold"
+                    <label class="form-label text-muted fw-bold small"
                         >Job Title</label
                     >
                     <input
                         type="text"
                         class="form-control"
                         name="job_title"
-                        placeholder="e.g. Senior Developer"
+                        placeholder="e.g. Senior Python Developer"
                         required
+                        style="border-radius: 8px"
                     />
                 </div>
-
-                <!-- Input field for Job Description -->
                 <div class="mb-3">
-                    <label class="form-label text-muted fw-bold"
+                    <label class="form-label text-muted fw-bold small"
                         >Job Description</label
                     >
                     <textarea
                         class="form-control"
                         name="job_description"
-                        rows="3"
-                        placeholder="Briefly describe the role..."
+                        rows="2"
                         required
+                        style="border-radius: 8px"
                     ></textarea>
                 </div>
-
-                <!-- Input selection for Employment Type -->
-                <div class="mb-4">
-                    <label class="form-label text-muted fw-bold"
+                <div class="mb-3">
+                    <label class="form-label text-muted fw-bold small"
                         >Employment Type</label
                     >
-                    <select class="form-select" name="employment_type" required>
+                    <select
+                        class="form-select"
+                        name="employment_type"
+                        required
+                        style="border-radius: 8px"
+                    >
                         <option value="" disabled selected>
-                            Select type...
+                            Select employment type...
                         </option>
                         <option value="Full-time">Full-time</option>
                         <option value="Part-time">Part-time</option>
+                        <option value="Contract">Contract</option>
                         <option value="Internship">Internship</option>
+                        <option value="Freelance">Freelance</option>
                     </select>
                 </div>
-
-                <!-- Submission Execution -->
-                <button type="submit" class="btn btn-custom-blue w-100 py-2">
+                <div class="mb-4">
+                    <label class="form-label text-muted fw-bold small"
+                        >Required System Skills</label
+                    >
+                    <div
+                        class="border p-2 bg-white"
+                        style="
+                            border-radius: 8px;
+                            max-height: 120px;
+                            overflow-y: auto;
+                        "
+                    >
+                        {% for skill in skills %}
+                        <div class="form-check">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                name="skills"
+                                value="{{ skill.skill_id }}"
+                                id="job_sk_{{ skill.skill_id }}"
+                            />
+                            <label
+                                class="form-check-label text-muted small"
+                                for="job_sk_{{ skill.skill_id }}"
+                                >{{ skill.skill_name }}</label
+                            >
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <button
+                    type="submit"
+                    class="btn text-white fw-bold w-100 py-2"
+                    style="background-color: #198754; border-radius: 8px"
+                >
                     Publish Job Posting
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- SECTION 2: DATA VISUALIZATION TABLES       -->
-    <!-- ========================================== -->
     <div class="col-lg-8">
-        <!-- --- SUB-SECTION A: Active Job Postings --- -->
         <h5 class="fw-bold mb-3" style="color: #2c3e50">Active Job Postings</h5>
-
         <div class="table-responsive mb-5">
-            <table class="table table-hover table-custom shadow-sm">
-                <thead>
+            <table
+                class="table table-hover table-custom shadow-sm"
+                style="border-top: 3px solid #198754"
+            >
+                <thead style="background-color: #f8f9fa; color: #2c3e50">
                     <tr>
-                        <th>Company</th>
-                        <th>Job Title</th>
-                        <th class="text-center">Type</th>
+                        <th class="py-3 px-4">Job Title</th>
+                        <th class="py-3 text-center">Type</th>
+                        <th class="py-3 text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Iterates over the jobs_list collection provided by the backend controller -->
                     {% for job in jobs_list %}
                     <tr>
-                        <td class="fw-bold">{{ job.company_name }}</td>
-                        <td>{{ job.job_title }}</td>
-                        <td class="text-center">
-                            <span class="badge bg-secondary"
-                                >{{ job.employment_type }}</span
+                        <td
+                            class="fw-bold align-middle px-4"
+                            style="color: #2c3e50"
+                        >
+                            {{ job.job_title }}
+                        </td>
+                        <td class="text-center align-middle">
+                            <span
+                                class="badge bg-light text-success border border-success px-3 py-2"
+                                style="border-radius: 20px"
                             >
+                                {{ job.employment_type }}
+                            </span>
+                        </td>
+                        <td class="text-center align-middle">
+                            <a
+                                href="/delete_job/{{ job.job_id }}"
+                                class="btn btn-sm btn-outline-danger shadow-sm px-3"
+                                style="border-radius: 20px"
+                                title="Delete Job"
+                            >
+                                🗑️ Delete
+                            </a>
                         </td>
                     </tr>
                     {% else %}
-                    <!-- Fallback UI state when the jobs collection is empty -->
                     <tr>
                         <td colspan="3" class="text-center text-muted py-4">
-                            No active job postings yet.
+                            No active job vacancies recorded.
                         </td>
                     </tr>
                     {% endfor %}
@@ -110,41 +175,167 @@
             </table>
         </div>
 
-        <!-- --- SUB-SECTION B: Skill-Gap Matcher Results --- -->
         <h5 class="fw-bold mb-3" style="color: #e67e22">
             System Match Results
         </h5>
-
-        <div class="table-responsive">
+        <div class="table-responsive mb-4">
             <table
-                class="table table-hover table-custom shadow-sm"
+                class="table table-hover table-custom shadow-sm align-middle"
                 style="border-top: 3px solid #e67e22"
             >
-                <thead style="background-color: #e67e22; color: white">
+                <thead
+                    style="
+                        background-color: #f8f9fa;
+                        color: #2c3e50;
+                        font-size: 0.9rem;
+                        text-transform: uppercase;
+                    "
+                >
                     <tr>
-                        <th>Applicant Name</th>
-                        <th>Matched Skill</th>
-                        <th>Position</th>
+                        <th class="py-3 px-4">Applicant Profile</th>
+                        <th class="py-3" style="width: 25%">Match Score</th>
+                        <th class="py-3">Target Position</th>
+                        <th class="py-3 text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Iterates over the matches_list collection provided by the backend controller -->
                     {% for match in matches_list %}
                     <tr>
-                        <td class="fw-bold">
-                            {{ match.f_name }} {{ match.l_name }}
+                        <td class="px-4 py-3">
+                            <div class="d-flex align-items-center">
+                                <div
+                                    class="rounded-circle flex-shrink-0 shadow-sm d-flex justify-content-center align-items-center text-white me-3"
+                                    style="
+                                        width: 45px;
+                                        height: 45px;
+                                        background: linear-gradient(
+                                            135deg,
+                                            #2c3e50,
+                                            #3498db
+                                        );
+                                        font-weight: bold;
+                                        font-size: 1.2rem;
+                                    "
+                                >
+                                    {{ match.f_name[0] }}
+                                </div>
+                                <div>
+                                    <h6
+                                        class="fw-bold mb-0"
+                                        style="color: #2c3e50"
+                                    >
+                                        {{ match.f_name }} {% if match.m_name
+                                        and match.m_name.strip() != '' %}{{
+                                        match.m_name[0] | upper }}.{% endif %}
+                                        {{ match.l_name }}
+                                    </h6>
+                                    <small class="text-muted"
+                                        >Learner ID: #{{ match.learner_id
+                                        }}</small
+                                    >
+                                </div>
+                            </div>
                         </td>
-                        <td class="fw-bold text-success">
-                            ✓ {{ match.matched_skill }}
+
+                        <td class="py-3">
+                            <div
+                                class="d-flex justify-content-between align-items-center mb-2"
+                            >
+                                <span
+                                    class="badge bg-light text-success border border-success px-2 py-1"
+                                    style="border-radius: 6px"
+                                    >{{ match.matched_skill }}</span
+                                >
+                                <span class="fw-bold text-success small"
+                                    >100%</span
+                                >
+                            </div>
+                            <div
+                                class="progress shadow-sm"
+                                style="height: 6px; border-radius: 10px"
+                            >
+                                <div
+                                    class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                                    style="width: 100%"
+                                ></div>
+                            </div>
                         </td>
-                        <td>{{ match.position }}</td>
+
+                        <td class="py-3 text-muted fw-bold small">
+                            {{ match.position }}
+                        </td>
+
+                        <td class="py-3 text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                <form
+                                    action="/calculate_gap"
+                                    method="POST"
+                                    class="m-0"
+                                >
+                                    <input
+                                        type="hidden"
+                                        name="learner_id"
+                                        value="{{ match.learner_id }}"
+                                    />
+                                    <input
+                                        type="hidden"
+                                        name="job_id"
+                                        value="{{ match.job_id }}"
+                                    />
+                                    <input
+                                        type="hidden"
+                                        name="learner_name"
+                                        value="{{ match.f_name }} {{ match.l_name }}"
+                                    />
+                                    <input
+                                        type="hidden"
+                                        name="job_title"
+                                        value="{{ match.position }}"
+                                    />
+                                    <button
+                                        type="submit"
+                                        class="btn text-white fw-bold shadow-sm"
+                                        style="
+                                            background-color: #e67e22;
+                                            border-radius: 20px;
+                                            font-size: 0.75rem;
+                                            padding: 4px 12px;
+                                            transition: transform 0.2s;
+                                        "
+                                    >
+                                        Compute %
+                                    </button>
+                                </form>
+                                <a
+                                    href="/view_learner/{{ match.learner_id }}"
+                                    class="btn btn-outline-primary fw-bold shadow-sm"
+                                    style="
+                                        border-radius: 20px;
+                                        font-size: 0.75rem;
+                                        padding: 4px 12px;
+                                    "
+                                >
+                                    View Profile
+                                </a>
+                            </div>
+                        </td>
                     </tr>
                     {% else %}
-                    <!-- Fallback UI state when no cross-referenced matches are found -->
                     <tr>
-                        <td colspan="3" class="text-center text-muted py-4">
-                            Waiting for skilled learners to match your job
-                            postings...
+                        <td colspan="4" class="text-center text-muted py-5">
+                            <div
+                                class="text-muted mb-2"
+                                style="font-size: 2rem"
+                            >
+                                🔍
+                            </div>
+                            <div class="fw-bold">
+                                No candidate matches found yet.
+                            </div>
+                            <small
+                                >Waiting for skilled learners to publicize their
+                                credentials.</small
+                            >
                         </td>
                     </tr>
                     {% endfor %}
