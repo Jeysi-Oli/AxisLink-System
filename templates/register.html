@@ -1,10 +1,3 @@
-<!-- ======================================================================= -->
-<!-- MODULE: register.html                                                   -->
-<!-- DESCRIPTION: User registration interface featuring dynamic form fields. -->
-<!--              Utilizes client-side scripting to adapt the UI payload     -->
-<!--              requirements based on the selected user identity role.     -->
-<!-- ======================================================================= -->
-
 {% extends "base.html" %} {% block content %}
 <div class="row justify-content-center mt-5">
     <div class="col-md-5">
@@ -12,13 +5,7 @@
             <h3 class="fw-bold mb-1" style="color: #1e3a8a">Join AxisLink</h3>
             <p class="text-muted mb-4">Create your account to get started.</p>
 
-            <!-- ========================================== -->
-            <!-- REGISTRATION PAYLOAD FORM                  -->
-            <!-- ========================================== -->
-
-            <!-- Transmits registration payload to the /register endpoint -->
             <form action="/register" method="POST">
-                <!-- Base authentication credentials required for all entity types -->
                 <div class="mb-3 text-start">
                     <label class="form-label fw-bold" style="color: #2c3e50"
                         >Email Address</label
@@ -47,11 +34,6 @@
                     />
                 </div>
 
-                <!-- ========================================== -->
-                <!-- CONDITIONAL ROLE SELECTION                 -->
-                <!-- ========================================== -->
-
-                <!-- Role selection dropdown: Dictates conditional rendering of subsequent fields -->
                 <div class="mb-4 text-start">
                     <label class="form-label fw-bold" style="color: #2c3e50"
                         >I want to register as a:</label
@@ -70,16 +52,14 @@
                             Learner (Student / Applicant)
                         </option>
                         <option value="Employer">
-                            Employer (Company / Institution)
+                            Employer (Company / Business)
+                        </option>
+                        <option value="Institution">
+                            Institution (School / Training Center)
                         </option>
                     </select>
                 </div>
 
-                <!-- ========================================== -->
-                <!-- DYNAMIC ENTITY FIELDS                      -->
-                <!-- ========================================== -->
-
-                <!-- Identity Sub-Form: Learner Data -->
                 <div
                     id="learnerFields"
                     class="d-none text-start mb-4 p-3"
@@ -118,7 +98,6 @@
                     </div>
                 </div>
 
-                <!-- Identity Sub-Form: Employer Data -->
                 <div
                     id="employerFields"
                     class="d-none text-start mb-4 p-3"
@@ -145,7 +124,32 @@
                     </div>
                 </div>
 
-                <!-- Registration execution trigger -->
+                <div
+                    id="institutionFields"
+                    class="d-none text-start mb-4 p-3"
+                    style="
+                        background-color: #f8f9fa;
+                        border-radius: 8px;
+                        border-left: 4px solid #e67e22;
+                    "
+                >
+                    <h6 class="fw-bold mb-3" style="color: #e67e22">
+                        Institution Information
+                    </h6>
+                    <div class="mb-2">
+                        <label class="form-label" style="font-size: 0.9rem"
+                            >Institution Name</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="institution_name"
+                            id="instName"
+                            placeholder="e.g. Batangas State University"
+                        />
+                    </div>
+                </div>
+
                 <button
                     type="submit"
                     class="btn btn-custom-blue w-100 py-2 mb-3"
@@ -156,11 +160,6 @@
 
             <hr class="text-muted" />
 
-            <!-- ========================================== -->
-            <!-- AUTHENTICATION REDIRECT                    -->
-            <!-- ========================================== -->
-
-            <!-- Navigation path for pre-existing accounts -->
             <p class="mb-0" style="font-size: 0.9rem">
                 Already have an account?
                 <a
@@ -177,16 +176,7 @@
     </div>
 </div>
 
-<!-- ======================================================================= -->
-<!-- CLIENT-SIDE LOGIC                                                       -->
-<!-- ======================================================================= -->
-
 <script>
-    /**
-     * Event listener bound to the role selection dropdown.
-     * Dynamically modifies the DOM to display role-specific input fields
-     * and toggles HTML5 'required' validation attributes to ensure payload integrity.
-     */
     document
         .getElementById('roleSelector')
         .addEventListener('change', function () {
@@ -195,27 +185,35 @@
             // DOM Element References
             var learnerBox = document.getElementById('learnerFields');
             var employerBox = document.getElementById('employerFields');
+            var instBox = document.getElementById('institutionFields');
+
             var fName = document.getElementById('fName');
             var lName = document.getElementById('lName');
             var compName = document.getElementById('compName');
+            var instName = document.getElementById('instName');
 
-            // Apply visibility and validation rules for Learner entity
+            // Reset visibility
+            learnerBox.classList.add('d-none');
+            employerBox.classList.add('d-none');
+            instBox.classList.add('d-none');
+
+            // Reset required attributes
+            fName.required = false;
+            lName.required = false;
+            compName.required = false;
+            instName.required = false;
+
+            // Apply rules based on selection
             if (role === 'Learner') {
                 learnerBox.classList.remove('d-none');
-                employerBox.classList.add('d-none');
-
                 fName.required = true;
                 lName.required = true;
-                compName.required = false;
-            }
-            // Apply visibility and validation rules for Employer entity
-            else if (role === 'Employer') {
+            } else if (role === 'Employer') {
                 employerBox.classList.remove('d-none');
-                learnerBox.classList.add('d-none');
-
                 compName.required = true;
-                fName.required = false;
-                lName.required = false;
+            } else if (role === 'Institution') {
+                instBox.classList.remove('d-none');
+                instName.required = true;
             }
         });
 </script>
