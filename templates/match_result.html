@@ -1,0 +1,47 @@
+{% extends "base.html" %} {% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div
+            class="glass-card text-center mb-5"
+            style="border-top: 5px solid #e67e22"
+        >
+            <h3 class="fw-bold mb-2" style="color: #1e3a8a">Match Result</h3>
+            <p class="text-muted mb-4">Advanced DBMS Analysis Complete</p>
+
+            <div class="mb-4">
+                <h5 class="fw-bold" style="color: #2c3e50">{{ applicant }}</h5>
+                <p class="text-muted small">
+                    Applying for:
+                    <strong style="color: #0d6efd">{{ role }}</strong>
+                </p>
+            </div>
+
+            <div
+                class="mb-4 p-4 rounded-circle mx-auto d-flex justify-content-center align-items-center shadow-sm"
+                style="
+                    width: 150px;
+                    height: 150px;
+                    background: linear-gradient(135deg, #e67e22, #f39c12);
+                    color: white;
+                "
+            >
+                <h1 class="fw-bold m-0" style="font-size: 3.5rem">
+                    {{ score }}%
+                </h1>
+            </div>
+
+            <p class="text-success fw-bold mb-4">
+                ✓ Stored Procedure successfully executed!
+            </p>
+
+            <a
+                href="/employer"
+                class="btn btn-outline-secondary w-100 py-2"
+                style="border-radius: 8px"
+            >
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
