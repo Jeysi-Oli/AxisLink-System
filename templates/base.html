@@ -1,98 +1,118 @@
-<!-- ======================================================================= -->
-<!-- MODULE: base.html (Master Template)                                     -->
-<!-- DESCRIPTION: Master layout template establishing the global UI skeleton,-->
-<!--              navigation framework, and common asset dependencies.       -->
-<!-- ======================================================================= -->
-
 <!doctype html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>AxisLink | National Lifelong Learning Grid</title>
+        <title>AxisLink | Dashboard</title>
 
-        <!-- ========================================== -->
-        <!-- GLOBAL STYLESHEETS                         -->
-        <!-- ========================================== -->
-
-        <!-- External Dependency: Bootstrap 5 Core Framework -->
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
             rel="stylesheet"
         />
 
-        <!-- Internal Dependency: Custom application styling -->
         <link
             rel="stylesheet"
             href="{{ url_for('static', filename='css/style.css') }}"
         />
     </head>
     <body>
-        <!-- ========================================== -->
-        <!-- TOP NAVIGATION COMPONENT                   -->
-        <!-- ========================================== -->
         <nav class="navbar navbar-expand-lg navbar-dark navbar-custom mb-4">
             <div class="container">
-                <!-- Application Brand Identity -->
-                <a class="navbar-brand" href="/">
-                    <span
-                        class="fw-bold"
-                        style="font-size: 1.5rem; letter-spacing: 1px"
-                        >⚡ AxisLink</span
-                    >
+                <a
+                    class="navbar-brand fw-bold"
+                    href="/"
+                    style="font-size: 1.5rem; letter-spacing: 1px"
+                >
+                    ⚡ AxisLink
                 </a>
 
-                <div class="ms-auto text-white d-flex align-items-center">
-                    <!-- ========================================== -->
-                    <!-- SESSION-BASED UI RENDERING                 -->
-                    <!-- ========================================== -->
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                    <!-- Verify active user session state -->
-                    {% if session.get('user_id') %}
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <div class="ms-auto text-white d-flex align-items-center">
+                        {% if session.get('user_id') %}
+                        <div class="dropdown">
+                            <button
+                                class="btn btn-light dropdown-toggle d-flex align-items-center rounded-pill px-3 py-1 shadow-sm"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                style="border: none"
+                            >
+                                <div
+                                    class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center me-2"
+                                    style="
+                                        width: 28px;
+                                        height: 28px;
+                                        font-weight: bold;
+                                        font-size: 0.8rem;
+                                    "
+                                >
+                                    {{ session.get('user_id')[0] }}
+                                </div>
+                                <span
+                                    class="fw-bold"
+                                    style="color: #2c3e50; font-size: 0.9rem"
+                                    >{{ session.get('user_id') }}</span
+                                >
+                            </button>
 
-                    <!-- Render authenticated user context (Role and Identifier) -->
-                    <span
-                        class="badge bg-primary fs-6 me-3"
-                        style="border: 1px solid #ffffff50"
-                    >
-                        {{ session.get('role') }}: {{ session.get('user_id') }}
-                    </span>
-
-                    <!-- Render session termination action -->
-                    <a
-                        href="/logout"
-                        class="btn btn-sm btn-danger fw-bold"
-                        style="border-radius: 8px; transition: all 0.3s"
-                        >Logout</a
-                    >
-
-                    {% else %}
-
-                    <!-- Render authentication entry point for unauthenticated requests -->
-                    <a
-                        href="/login"
-                        class="btn btn-sm btn-outline-light fw-bold"
-                        style="border-radius: 8px; transition: all 0.3s"
-                        >Login</a
-                    >
-
-                    {% endif %}
+                            <ul
+                                class="dropdown-menu dropdown-menu-end shadow border-0"
+                                style="border-radius: 12px; margin-top: 10px"
+                            >
+                                <li>
+                                    <a
+                                        class="dropdown-item fw-bold py-2"
+                                        href="/{{ session.get('role') | lower }}"
+                                        style="color: #1e3a8a"
+                                    >
+                                        My Dashboard
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li>
+                                    <a
+                                        class="dropdown-item text-danger fw-bold py-2"
+                                        href="/logout"
+                                    >
+                                        Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        {% else %}
+                        <a
+                            href="/login"
+                            class="btn btn-sm btn-outline-light fw-bold"
+                            style="border-radius: 8px; transition: all 0.3s"
+                            >Login</a
+                        >
+                        <a
+                            href="/register"
+                            class="btn btn-sm btn-light fw-bold ms-2"
+                            style="
+                                color: #1e3a8a;
+                                border-radius: 8px;
+                                transition: all 0.3s;
+                            "
+                            >Register</a
+                        >
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </nav>
 
-        <!-- ========================================== -->
-        <!-- DYNAMIC VIEWPORT                           -->
-        <!-- ========================================== -->
-
-        <!-- Injection point for rendering child template architectures -->
         <div class="container">{% block content %} {% endblock %}</div>
 
-        <!-- ========================================== -->
-        <!-- GLOBAL SCRIPTS                             -->
-        <!-- ========================================== -->
-
-        <!-- External Dependency: Bootstrap 5 Interactive Components -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>
