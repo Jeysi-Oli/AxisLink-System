@@ -39,12 +39,20 @@ body {
  * ============================================================================== */
 
 .glass-card {
-    background: #ffffff;
+    /* Ginagawang transparent ang puti (70% opacity) */
+    background: rgba(255, 255, 255, 0.7);
+
+    /* Ito ang magic ng Glassmorphism: bina-blur nito ang nasa likod ng card! */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
     border-radius: 15px;
     padding: 30px;
     box-shadow: 0 10px 30px rgba(13, 110, 253, 0.1);
-    border: none;
-    transition: transform 0.3s ease; /* Fluid transition for interactive lifting */
+
+    /* Manipis na white border para magmukhang kanto ng salamin */
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: transform 0.3s ease;
 }
 
 .glass-card:hover {
