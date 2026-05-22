@@ -1,0 +1,93 @@
+{% extends "base.html" %} {% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-8">
+        <div class="glass-card mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold m-0" style="color: #198754">
+                    Update Company Profile
+                </h4>
+                <a
+                    href="/employer"
+                    class="btn btn-outline-secondary btn-sm"
+                    style="border-radius: 6px"
+                    >Back to Dashboard</a
+                >
+            </div>
+            <hr class="text-muted mb-4" />
+            <form action="/update_employer_profile" method="POST">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted fw-bold"
+                            >Company Name</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="company_name"
+                            value="{{ employer.company_name }}"
+                            required
+                        />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted fw-bold"
+                            >Industry Sector</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="industry_sector"
+                            value="{{ employer.industry_sector }}"
+                            required
+                        />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted fw-bold"
+                            >Contact Person</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="contact_person"
+                            value="{{ employer.contact_person }}"
+                            required
+                        />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted fw-bold"
+                            >Contact Number</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            name="contact_number"
+                            value="{{ employer.contact_number }}"
+                            required
+                        />
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-muted fw-bold"
+                        >Company Address</label
+                    >
+                    <textarea
+                        class="form-control"
+                        name="company_address"
+                        rows="2"
+                        required
+                    >
+{{ employer.company_address }}</textarea
+                    >
+                </div>
+                <button
+                    type="submit"
+                    class="btn btn-success w-100 py-2 mt-2 fw-bold"
+                >
+                    Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
