@@ -1,0 +1,125 @@
+{% extends "base.html" %} {% block content %}
+<div class="row justify-content-center mt-4 mb-5">
+    <div class="col-lg-9">
+        <div class="mb-3">
+            <a
+                href="/employer"
+                class="btn btn-outline-secondary btn-sm fw-bold"
+                style="border-radius: 6px"
+            >
+                ← Back to Match Results
+            </a>
+        </div>
+
+        <div class="glass-card shadow-sm" style="border-top: 5px solid #0d6efd">
+            <div
+                class="d-flex align-items-center mb-4 pb-3"
+                style="border-bottom: 1px solid #e0e0e0"
+            >
+                <div
+                    class="rounded-circle shadow-sm d-flex justify-content-center align-items-center text-white"
+                    style="
+                        width: 90px;
+                        height: 90px;
+                        background: linear-gradient(135deg, #1e3a8a, #0d6efd);
+                        font-size: 2.5rem;
+                        font-weight: bold;
+                    "
+                >
+                    {{ learner.first_name[0] }}
+                </div>
+                <div class="ms-4">
+                    <h2 class="fw-bold mb-1" style="color: #1e3a8a">
+                        {{ learner.first_name }} {% if learner.middle_name and
+                        learner.middle_name.strip() != '' %} {{
+                        learner.middle_name[0] | upper }}. {% endif %} {{
+                        learner.last_name }}
+                    </h2>
+                    <h6 class="text-muted fw-bold m-0">
+                        Highest Education:
+                        <span class="text-primary"
+                            >{{ learner.highest_educational_attainment }}</span
+                        >
+                    </h6>
+                </div>
+            </div>
+
+            <h5 class="fw-bold mb-3" style="color: #2c3e50">Contact Details</h5>
+            <div
+                class="row mb-4 bg-light p-3 rounded"
+                style="border-left: 4px solid #198754"
+            >
+                <div class="col-md-6 mb-2 mb-md-0">
+                    <p class="mb-1">
+                        <strong class="text-muted">Email Address:</strong>
+                    </p>
+                    <p class="fw-bold m-0" style="color: #2c3e50">
+                        {{ learner.email_address }}
+                    </p>
+                </div>
+                <div class="col-md-6 mb-2 mb-md-0">
+                    <p class="mb-1">
+                        <strong class="text-muted">Contact Number:</strong>
+                    </p>
+                    <p class="fw-bold m-0" style="color: #2c3e50">
+                        {{ learner.contact_number }}
+                    </p>
+                </div>
+                <div class="col-12 mt-3">
+                    <p class="mb-1">
+                        <strong class="text-muted">Home Address:</strong>
+                    </p>
+                    <p class="fw-bold m-0" style="color: #2c3e50">
+                        {{ learner.home_address }}
+                    </p>
+                </div>
+            </div>
+
+            <h5 class="fw-bold mb-3" style="color: #2c3e50">
+                Verified Credentials
+            </h5>
+            <div class="table-responsive">
+                <table class="table table-custom table-hover shadow-sm">
+                    <thead style="background-color: #f8f9fa">
+                        <tr>
+                            <th style="color: #1e3a8a">Certification</th>
+                            <th style="color: #1e3a8a">Issuing Institution</th>
+                            <th style="color: #1e3a8a">Date Acquired</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cert in portfolio %}
+                        <tr>
+                            <td class="fw-bold text-success">
+                                ✓ {{ cert.credential_name }}
+                            </td>
+                            <td class="text-muted">
+                                {{ cert.institution_name }}
+                            </td>
+                            <td>{{ cert.date_acquired }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted py-4">
+                                This learner has no verified credentials linked
+                                to their portfolio yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-end mt-4">
+                <a
+                    href="mailto:{{ learner.email_address }}"
+                    class="btn btn-primary fw-bold px-4"
+                    style="border-radius: 8px"
+                >
+                    Send Email Invite
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
