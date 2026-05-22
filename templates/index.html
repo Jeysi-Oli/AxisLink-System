@@ -1,10 +1,3 @@
-<!-- ======================================================================= -->
-<!-- MODULE: index.html (Public Landing Page)                                -->
-<!-- DESCRIPTION: Serves as the primary public-facing entry point of the     -->
-<!--              application. Features promotional content and routes users -->
-<!--              to appropriate authentication workflows.                   -->
-<!-- ======================================================================= -->
-
 <!doctype html>
 <html lang="en">
     <head>
@@ -12,30 +5,28 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>AxisLink | Empowering Careers</title>
 
-        <!-- External Dependency: Bootstrap 5 Core Framework -->
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
             rel="stylesheet"
         />
 
-        <!-- Internal Dependency: Custom application styling -->
         <link
             rel="stylesheet"
             href="{{ url_for('static', filename='css/style.css') }}"
         />
 
-        <!-- ========================================== -->
-        <!-- MODULE-SPECIFIC STYLESHEET                 -->
-        <!-- ========================================== -->
         <style>
-            /* Component-specific styling isolated for the landing page Hero section */
+            /* THE MAGIC TRICK: Smooth Scrolling Effect */
+            html {
+                scroll-behavior: smooth;
+            }
+
             .hero-section {
                 background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
                 color: white;
-                padding: 100px 0;
+                padding: 120px 0;
                 text-align: center;
                 border-radius: 0 0 50px 50px;
-                margin-bottom: 50px;
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             }
             .hero-title {
@@ -47,97 +38,134 @@
                 color: #2c3e50;
                 font-weight: 600;
                 margin: 0 10px;
+                transition: color 0.3s ease;
             }
             .nav-link:hover {
                 color: #0d6efd;
             }
+            .section-title {
+                color: #1e3a8a;
+                font-weight: 700;
+                margin-bottom: 20px;
+            }
         </style>
     </head>
     <body>
-        <!-- ========================================== -->
-        <!-- DYNAMIC NAVIGATION COMPONENT               -->
-        <!-- ========================================== -->
         <nav
-            class="navbar navbar-expand-lg navbar-light bg-white py-3 shadow-sm"
+            class="navbar navbar-expand-lg navbar-light bg-white py-3 shadow-sm fixed-top"
         >
             <div class="container">
-                <!-- Application Brand Identity -->
                 <a
                     class="navbar-brand fw-bold"
-                    href="/"
+                    href="#home"
                     style="color: #1e3a8a; font-size: 1.5rem"
                 >
                     ⚡ AxisLink
                 </a>
 
-                <!-- Mobile Viewport Toggle -->
                 <button
                     class="navbar-toggler"
                     type="button"
                     data-bs-toggle="collapse"
-                    data-bs-target="#navbarNav"
+                    data-bs-target="#navbarNavMain"
                 >
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <!-- Standard Navigation Links -->
+                <div class="collapse navbar-collapse" id="navbarNavMain">
                     <ul class="navbar-nav mx-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Home</a>
+                            <a class="nav-link" href="#home">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">About Us</a>
+                            <a class="nav-link" href="#about">About</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Features</a>
+                            <a class="nav-link" href="#features">Features</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Contact</a>
+                            <a class="nav-link" href="#contact">Contact</a>
                         </li>
                     </ul>
 
                     <div class="d-flex align-items-center">
-                        <!-- ========================================== -->
-                        <!-- SESSION-BASED UI RENDERING                 -->
-                        <!-- ========================================== -->
                         {% if session.get('user_id') %}
+                        <div class="dropdown">
+                            <button
+                                class="btn btn-white dropdown-toggle d-flex align-items-center rounded-pill px-3 py-2 shadow-sm"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                style="
+                                    border: 1px solid #e0e0e0;
+                                    background-color: white;
+                                "
+                            >
+                                <div
+                                    class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center me-2"
+                                    style="
+                                        width: 30px;
+                                        height: 30px;
+                                        font-weight: bold;
+                                    "
+                                >
+                                    {{ session.get('user_id')[0] }}
+                                </div>
+                                <span class="fw-bold" style="color: #2c3e50"
+                                    >{{ session.get('user_id') }}</span
+                                >
+                            </button>
 
-                        <!-- Render authenticated state context and termination action -->
-                        <span class="badge bg-primary fs-6 me-3"
-                            >View: {{ session.get('user_id') }}</span
-                        >
-                        <a
-                            href="/logout"
-                            class="btn btn-danger fw-bold"
-                            style="border-radius: 8px"
-                            >Logout</a
-                        >
-
+                            <ul
+                                class="dropdown-menu dropdown-menu-end shadow border-0"
+                                style="border-radius: 12px; margin-top: 10px"
+                            >
+                                <li>
+                                    <a
+                                        class="dropdown-item fw-bold py-2"
+                                        href="/{{ session.get('role') | lower }}"
+                                        style="color: #1e3a8a"
+                                    >
+                                        My Dashboard
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li>
+                                    <a
+                                        class="dropdown-item text-danger fw-bold py-2"
+                                        href="/logout"
+                                    >
+                                        Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                         {% else %}
-
-                        <!-- Render unauthenticated state entry point -->
                         <a
                             href="/login"
                             class="btn btn-outline-primary fw-bold"
                             style="border-radius: 8px"
                             >Login</a
                         >
-
+                        <a
+                            href="/register"
+                            class="btn btn-primary fw-bold ms-2"
+                            style="border-radius: 8px"
+                            >Register</a
+                        >
                         {% endif %}
                     </div>
                 </div>
             </div>
         </nav>
 
-        <!-- ========================================== -->
-        <!-- HERO SECTION (Primary Call-to-Action)      -->
-        <!-- ========================================== -->
-        <div class="hero-section">
+        <div style="margin-top: 76px"></div>
+
+        <div id="home" class="hero-section">
             <div class="container">
-                <!-- Primary Value Proposition -->
                 <h1 class="hero-title mb-4">
-                    The National Lifelong Learning Grid
+                    A Centralized Micro-Credential Registry and Lifelong
+                    Learning Framework
                 </h1>
                 <p
                     class="lead mb-5"
@@ -154,34 +182,141 @@
                 </p>
 
                 <div class="d-flex justify-content-center gap-3">
-                    <!-- Route entry points for user registration payloads -->
                     <a
                         href="/register"
                         class="btn btn-light btn-lg fw-bold px-4"
                         style="color: #1e3a8a; border-radius: 10px"
-                        >I am a Learner</a
+                        >I am a Learner!</a
                     >
                     <a
                         href="/register"
                         class="btn btn-outline-light btn-lg fw-bold px-4"
                         style="border-radius: 10px"
-                        >I am an Employer</a
+                        >I am an Employer!</a
                     >
                 </div>
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- APPLICATION FOOTER                         -->
-        <!-- ========================================== -->
-        <footer class="text-center text-muted mt-5 mb-4">
+        <div id="about" class="container" style="padding: 100px 0">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-4">
+                    <h2 class="section-title">Bridging the Skill Gap.</h2>
+                    <p
+                        class="text-muted"
+                        style="font-size: 1.1rem; line-height: 1.8"
+                    >
+                        AxisLink is a centralized database system developed to
+                        solve the mismatch between what learners study and what
+                        employers actually need. By using Advanced Database
+                        Management algorithms, we ensure that every skill
+                        acquired is a step closer to a hired position.
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <div
+                        class="glass-card text-center"
+                        style="
+                            background: linear-gradient(
+                                135deg,
+                                #0d6efd,
+                                #00d2ff
+                            );
+                            color: white;
+                        "
+                    >
+                        <h3 class="fw-bold">Our Mission</h3>
+                        <p class="mb-0">
+                            "To empower every learner and employer through
+                            seamless, data-driven skill matching."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="features" style="background-color: #f8f9fa; padding: 100px 0">
+            <div class="container text-center">
+                <h2 class="section-title mb-5">System Capabilities</h2>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="glass-card h-100">
+                            <h4 class="fw-bold" style="color: #0d6efd">
+                                🎯 Skill Matching
+                            </h4>
+                            <p class="text-muted mt-3">
+                                Advanced Stored Procedures automatically compute
+                                compatibility between applicant skills and job
+                                requirements.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="glass-card h-100">
+                            <h4 class="fw-bold" style="color: #0d6efd">
+                                ⏰ Auto-Expiry
+                            </h4>
+                            <p class="text-muted mt-3">
+                                Built-in MySQL Event Schedulers ensure that
+                                temporary certifications are constantly updated
+                                and validated.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="glass-card h-100">
+                            <h4 class="fw-bold" style="color: #0d6efd">
+                                🔒 Secure Architecture
+                            </h4>
+                            <p class="text-muted mt-3">
+                                Implements standardized password hashing and
+                                role-based access control for absolute data
+                                integrity.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div
+            id="contact"
+            class="container text-center"
+            style="padding: 100px 0"
+        >
+            <h2 class="section-title mb-4">Get in Touch</h2>
+            <p class="text-muted mb-5">
+                Have questions about the system? Reach out to our development
+                team.
+            </p>
+
+            <div class="glass-card mx-auto" style="max-width: 600px">
+                <h5 class="fw-bold" style="color: #2c3e50">
+                    Batangas State University
+                </h5>
+                <p class="text-muted mb-1">
+                    Bachelor of Science in Information Technology
+                </p>
+                <p class="text-muted mb-0">Batangas, Philippines</p>
+                <hr class="my-4" />
+                <a
+                    href="mailto:admin@axislink.com"
+                    class="btn btn-custom-blue px-4 py-2"
+                    >Email Administrator</a
+                >
+            </div>
+        </div>
+
+        <footer
+            class="text-center text-muted py-4"
+            style="background-color: #f0f4f8"
+        >
             <small
-                >© 2026 AxisLink System. Developed with persistence and
-                faith.</small
+                >© 2026 AxisLink System. Developed with persistence and faith.
+                Philippians 4:13.</small
             >
         </footer>
 
-        <!-- External Dependency: Bootstrap 5 Interactive Components -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>
