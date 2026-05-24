@@ -1,10 +1,21 @@
+<!-- ======================================================================= -->
+<!-- MODULE: learner_dashboard.html                                          -->
+<!-- DESCRIPTION: Primary authenticated interface for learners. Displays     -->
+<!-- personal profile overview, a manageable credential vault,               -->
+<!-- and active job opportunities available in the system.                   -->
+<!-- ======================================================================= -->
+
 {% extends "base.html" %} {% block content %}
 <div class="row mt-4 mb-5">
+    <!-- ========================================== -->
+    <!-- LEFT COLUMN: LEARNER PROFILE CARD          -->
+    <!-- ========================================== -->
     <div class="col-lg-4">
         <div
             class="glass-card mb-4 text-center shadow-sm"
             style="border-top: 5px solid #0d6efd"
         >
+            <!-- Dynamic Avatar Representation -->
             <div
                 class="mb-3 mx-auto d-flex justify-content-center align-items-center rounded-circle shadow-sm"
                 style="
@@ -18,6 +29,8 @@
             >
                 {{ learner_info.first_name[0] }}
             </div>
+
+            <!-- Full Name Concatenation with Conditional Middle Initial -->
             <h4 class="fw-bold mb-1" style="color: #1e3a8a">
                 {{ learner_info.first_name }} {% if learner_info.middle_name and
                 learner_info.middle_name.strip() != '' %} {{
@@ -27,7 +40,10 @@
             <p class="text-muted small fw-bold mb-3">
                 {{ learner_info.email }}
             </p>
+
             <hr class="text-muted" />
+
+            <!-- Educational Attainment Metadata -->
             <div class="text-start mb-4">
                 <p class="mb-1" style="font-size: 0.9rem">
                     <strong style="color: #2c3e50">Highest Education:</strong
@@ -35,6 +51,8 @@
                     <span class="text-muted">{{ learner_info.education }}</span>
                 </p>
             </div>
+
+            <!-- Routing endpoint to profile modification module -->
             <a
                 href="/update_profile"
                 class="btn btn-outline-primary w-100 fw-bold"
@@ -45,7 +63,11 @@
         </div>
     </div>
 
+    <!-- ========================================== -->
+    <!-- RIGHT COLUMN: CREDENTIALS & JOB MARKET     -->
+    <!-- ========================================== -->
     <div class="col-lg-8">
+        <!-- --- SUB-SECTION A: Credential Vault --- -->
         <h5 class="fw-bold mb-3" style="color: #2c3e50">My Credential Vault</h5>
         <div class="table-responsive mb-5">
             <table
@@ -60,6 +82,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Iterates over credentials currently assigned to the learner -->
                     {% for my_cred in my_credentials_list %}
                     <tr>
                         <td class="fw-bold align-middle" style="color: #2c3e50">
@@ -73,6 +96,7 @@
                             >
                         </td>
                         <td class="text-center align-middle">
+                            <!-- Toggle mechanism for credential privacy state -->
                             {% if my_cred.visibility_status == 'Public' %}
                             <a
                                 href="/toggle_visibility/{{ my_cred.learner_credential_id }}"
@@ -93,6 +117,7 @@
                         </td>
                     </tr>
                     {% else %}
+                    <!-- Fallback UI state for empty credential vault -->
                     <tr>
                         <td colspan="3" class="text-center text-muted py-4">
                             Your vault is currently empty. Credentials will
@@ -105,6 +130,7 @@
             </table>
         </div>
 
+        <!-- --- SUB-SECTION B: Active Job Opportunities --- -->
         <h5 class="fw-bold mb-3" style="color: #0d6efd">
             Active Job Opportunities
         </h5>
@@ -121,6 +147,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Render tabular data of global active job postings -->
                     {% for job in jobs_list %}
                     <tr>
                         <td class="fw-bold">{{ job.company_name }}</td>
@@ -138,6 +165,7 @@
                         </td>
                     </tr>
                     {% else %}
+                    <!-- Fallback UI state for empty job market -->
                     <tr>
                         <td colspan="3" class="text-center text-muted py-4">
                             No active job postings available at the moment.
