@@ -1,10 +1,22 @@
+<!-- ======================================================================= -->
+<!-- MODULE: employer_dashboard.html                                         -->
+<!-- DESCRIPTION: Employer portal interface providing profile management,    -->
+<!-- job posting capabilities with skill-tagging, and dynamic candidate      -->
+<!-- skill-matching visualization.                                           -->
+<!-- ======================================================================= -->
+
 {% extends "base.html" %} {% block content %}
 <div class="row mt-4 mb-5">
+    <!-- ========================================== -->
+    <!-- LEFT COLUMN: PROFILE & JOB REQUISITION     -->
+    <!-- ========================================== -->
     <div class="col-lg-4 mb-4">
+        <!-- --- SUB-SECTION A: Employer Profile Card --- -->
         <div
             class="glass-card mb-4 text-center shadow-sm"
             style="border-top: 5px solid #198754"
         >
+            <!-- Render dynamic corporate avatar using the initial character of the company name -->
             <div
                 class="mb-3 mx-auto d-flex justify-content-center align-items-center rounded-circle shadow-sm"
                 style="
@@ -18,12 +30,15 @@
             >
                 {{ employer.company_name[0] }}
             </div>
+
             <h4 class="fw-bold mb-1" style="color: #2c3e50">
                 {{ employer.company_name }}
             </h4>
             <p class="text-muted small fw-bold mb-3">
                 {{ employer.email_address }}
             </p>
+
+            <!-- Routing endpoint for corporate profile modification -->
             <a
                 href="/update_employer_profile"
                 class="btn btn-outline-success w-100 fw-bold"
@@ -33,8 +48,11 @@
             </a>
         </div>
 
+        <!-- --- SUB-SECTION B: Job Posting Form --- -->
         <div class="glass-card shadow-sm" style="border-top: 5px solid #198754">
             <h5 class="fw-bold mb-3" style="color: #198754">Post a New Job</h5>
+
+            <!-- Transmits job creation payload to the /add_job endpoint -->
             <form action="/add_job" method="POST">
                 <div class="mb-3">
                     <label class="form-label text-muted fw-bold small"
@@ -49,6 +67,7 @@
                         style="border-radius: 8px"
                     />
                 </div>
+
                 <div class="mb-3">
                     <label class="form-label text-muted fw-bold small"
                         >Job Description</label
@@ -61,6 +80,7 @@
                         style="border-radius: 8px"
                     ></textarea>
                 </div>
+
                 <div class="mb-3">
                     <label class="form-label text-muted fw-bold small"
                         >Employment Type</label
@@ -81,6 +101,8 @@
                         <option value="Freelance">Freelance</option>
                     </select>
                 </div>
+
+                <!-- Dynamic Skill Tagging Array -->
                 <div class="mb-4">
                     <label class="form-label text-muted fw-bold small"
                         >Required System Skills</label
@@ -93,6 +115,7 @@
                             overflow-y: auto;
                         "
                     >
+                        <!-- Iterate globally defined system skills for job requirement tagging -->
                         {% for skill in skills %}
                         <div class="form-check">
                             <input
@@ -111,6 +134,7 @@
                         {% endfor %}
                     </div>
                 </div>
+
                 <button
                     type="submit"
                     class="btn text-white fw-bold w-100 py-2"
@@ -122,7 +146,11 @@
         </div>
     </div>
 
+    <!-- ========================================== -->
+    <!-- RIGHT COLUMN: DATA VISUALIZATION MATRICES  -->
+    <!-- ========================================== -->
     <div class="col-lg-8">
+        <!-- --- SUB-SECTION C: Active Job Postings Directory --- -->
         <h5 class="fw-bold mb-3" style="color: #2c3e50">Active Job Postings</h5>
         <div class="table-responsive mb-5">
             <table
@@ -137,6 +165,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Render tabular data of currently published job vacancies associated with the employer -->
                     {% for job in jobs_list %}
                     <tr>
                         <td
@@ -154,6 +183,7 @@
                             </span>
                         </td>
                         <td class="text-center align-middle">
+                            <!-- Target endpoint for job record deletion -->
                             <a
                                 href="/delete_job/{{ job.job_id }}"
                                 class="btn btn-sm btn-outline-danger shadow-sm px-3"
@@ -165,6 +195,7 @@
                         </td>
                     </tr>
                     {% else %}
+                    <!-- Fallback UI state for an empty job collection -->
                     <tr>
                         <td colspan="3" class="text-center text-muted py-4">
                             No active job vacancies recorded.
@@ -175,6 +206,7 @@
             </table>
         </div>
 
+        <!-- --- SUB-SECTION D: Algorithmic Candidate Matches --- -->
         <h5 class="fw-bold mb-3" style="color: #e67e22">
             System Match Results
         </h5>
@@ -199,10 +231,12 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Visualize cross-referenced candidate profiles fulfilling active job requirements -->
                     {% for match in matches_list %}
                     <tr>
                         <td class="px-4 py-3">
                             <div class="d-flex align-items-center">
+                                <!-- Dynamic candidate avatar extraction -->
                                 <div
                                     class="rounded-circle flex-shrink-0 shadow-sm d-flex justify-content-center align-items-center text-white me-3"
                                     style="
@@ -224,6 +258,7 @@
                                         class="fw-bold mb-0"
                                         style="color: #2c3e50"
                                     >
+                                        <!-- Conditionally render middle initial if available -->
                                         {{ match.f_name }} {% if match.m_name
                                         and match.m_name.strip() != '' %}{{
                                         match.m_name[0] | upper }}.{% endif %}
@@ -246,6 +281,7 @@
                                     style="border-radius: 6px"
                                     >{{ match.matched_skill }}</span
                                 >
+                                <!-- Static UI representation for matched percentage; logic handled by separate action -->
                                 <span class="fw-bold text-success small"
                                     >100%</span
                                 >
@@ -267,11 +303,13 @@
 
                         <td class="py-3 text-center">
                             <div class="d-flex justify-content-center gap-2">
+                                <!-- Form block to execute server-side computation of exact skill gap -->
                                 <form
                                     action="/calculate_gap"
                                     method="POST"
                                     class="m-0"
                                 >
+                                    <!-- Hidden state inputs mapping relational identifiers to the calculation endpoint -->
                                     <input
                                         type="hidden"
                                         name="learner_id"
@@ -306,6 +344,8 @@
                                         Compute %
                                     </button>
                                 </form>
+
+                                <!-- Routing endpoint for complete candidate profile review -->
                                 <a
                                     href="/view_learner/{{ match.learner_id }}"
                                     class="btn btn-outline-primary fw-bold shadow-sm"
@@ -321,6 +361,7 @@
                         </td>
                     </tr>
                     {% else %}
+                    <!-- Fallback UI state for empty match cross-references -->
                     <tr>
                         <td colspan="4" class="text-center text-muted py-5">
                             <div
