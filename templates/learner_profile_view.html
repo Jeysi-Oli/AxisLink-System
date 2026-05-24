@@ -1,6 +1,14 @@
+<!-- ======================================================================= -->
+<!-- MODULE: learner_profile_view.html                                       -->
+<!-- DESCRIPTION: Read-only profile view designed for external actors.       -->
+<!-- Displays a learner's contact metadata and their publicly verified       -->
+<!-- credential portfolio.                                                   -->
+<!-- ======================================================================= -->
+
 {% extends "base.html" %} {% block content %}
 <div class="row justify-content-center mt-4 mb-5">
     <div class="col-lg-9">
+        <!-- Navigation routing back to the employer match matrix -->
         <div class="mb-3">
             <a
                 href="/employer"
@@ -11,7 +19,11 @@
             </a>
         </div>
 
+        <!-- ========================================== -->
+        <!-- CANDIDATE DOSSIER                          -->
+        <!-- ========================================== -->
         <div class="glass-card shadow-sm" style="border-top: 5px solid #0d6efd">
+            <!-- --- SUB-SECTION A: Header & Identity --- -->
             <div
                 class="d-flex align-items-center mb-4 pb-3"
                 style="border-bottom: 1px solid #e0e0e0"
@@ -44,6 +56,7 @@
                 </div>
             </div>
 
+            <!-- --- SUB-SECTION B: Contact Information --- -->
             <h5 class="fw-bold mb-3" style="color: #2c3e50">Contact Details</h5>
             <div
                 class="row mb-4 bg-light p-3 rounded"
@@ -75,6 +88,7 @@
                 </div>
             </div>
 
+            <!-- --- SUB-SECTION C: Verified Portfolio --- -->
             <h5 class="fw-bold mb-3" style="color: #2c3e50">
                 Verified Credentials
             </h5>
@@ -88,6 +102,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <!-- Render array of public credentials associated with the target learner -->
                         {% for cert in portfolio %}
                         <tr>
                             <td class="fw-bold text-success">
@@ -99,6 +114,7 @@
                             <td>{{ cert.date_acquired }}</td>
                         </tr>
                         {% else %}
+                        <!-- Fallback UI state for candidates lacking verified public credentials -->
                         <tr>
                             <td colspan="3" class="text-center text-muted py-4">
                                 This learner has no verified credentials linked
@@ -110,6 +126,7 @@
                 </table>
             </div>
 
+            <!-- Execution trigger invoking native client mail protocol -->
             <div class="text-end mt-4">
                 <a
                     href="mailto:{{ learner.email_address }}"
