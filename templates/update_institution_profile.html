@@ -1,7 +1,16 @@
+<!-- ======================================================================= -->
+<!-- MODULE: update_institution_profile.html                                 -->
+<!-- DESCRIPTION: Administration interface for institutions to modify their  -->
+<!-- profile records or perform a destructive account deletion.              -->
+<!-- ======================================================================= -->
+
 {% extends "base.html" %} {% block content %}
 <div class="row justify-content-center mt-4">
     <div class="col-lg-8">
         <div class="glass-card mb-5">
+            <!-- ========================================== -->
+            <!-- HEADER CONTROLS                            -->
+            <!-- ========================================== -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="fw-bold m-0" style="color: #e67e22">
                     Update Institution Profile
@@ -16,7 +25,13 @@
 
             <hr class="text-muted mb-4" />
 
+            <!-- ========================================== -->
+            <!-- DATA MUTATION FORM                         -->
+            <!-- ========================================== -->
+
+            <!-- Transmits updated profile payload to the /update_institution_profile endpoint -->
             <form action="/update_institution_profile" method="POST">
+                <!-- Institutional Identity Fields -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label text-muted fw-bold small"
@@ -31,10 +46,12 @@
                             style="border-radius: 8px"
                         />
                     </div>
+
                     <div class="col-md-6">
                         <label class="form-label text-muted fw-bold small"
                             >Accreditation Type</label
                         >
+                        <!-- Dropdown initialization logic -->
                         <select
                             class="form-select"
                             name="accreditation_type"
@@ -42,9 +59,11 @@
                             style="border-radius: 8px"
                         >
                             {% set acc_options = ['CHED', 'TESDA', 'DepEd',
-                            'Private/Corporate', 'Other'] %} {% for opt in
-                            acc_options %} {% if institution.accreditation_type
-                            == opt %}
+                            'Private/Corporate', 'Other'] %}
+
+                            <!-- Iterate options and apply conditional selection based on database state -->
+                            {% for opt in acc_options %} {% if
+                            institution.accreditation_type == opt %}
                             <option value="{{ opt }}" selected>
                                 {{ opt }}
                             </option>
@@ -55,6 +74,7 @@
                     </div>
                 </div>
 
+                <!-- Contact Administrative Fields -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label text-muted fw-bold small"
@@ -99,6 +119,7 @@
                     >
                 </div>
 
+                <!-- Profile Update Execution -->
                 <button
                     type="submit"
                     class="btn text-white w-100 py-2 mt-2 fw-bold"
@@ -109,6 +130,12 @@
             </form>
 
             <hr class="my-4 text-muted" />
+
+            <!-- ========================================== -->
+            <!-- DESTRUCTIVE ACTION MODULE                  -->
+            <!-- ========================================== -->
+
+            <!-- Account deletion form with client-side confirmation safety barrier -->
             <form
                 action="/delete_account"
                 method="POST"
