@@ -1,16 +1,15 @@
 /* ==============================================================================
- * MODULE: style.css
- * DESCRIPTION: Global cascading stylesheet defining the visual identity, 
- *              component aesthetics, and interactive states for the AxisLink 
- *              web application.
- * ============================================================================== */
+MODULE: style.css
+DESCRIPTION: Global cascading stylesheet defining the visual identity, component 
+aesthetics, and interactive states for the AxisLink web application.
+============================================================================== */
 
 /* --- TYPOGRAPHY: External Resource Acquisition --- */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
 /* ==============================================================================
- * GLOBAL SYSTEM STYLING
- * ============================================================================== */
+GLOBAL SYSTEM STYLING
+============================================================================== */
 
 body {
     font-family: 'Poppins', sans-serif;
@@ -19,8 +18,8 @@ body {
 }
 
 /* ==============================================================================
- * NAVIGATION COMPONENTS
- * ============================================================================== */
+NAVIGATION COMPONENTS
+============================================================================== */
 
 .navbar-custom {
     /* Multi-layered gradient for architectural depth */
@@ -35,14 +34,14 @@ body {
 }
 
 /* ==============================================================================
- * UI CONTAINER COMPONENTS (GLASSMORPHISM)
- * ============================================================================== */
+UI CONTAINER COMPONENTS (GLASSMORPHISM)
+============================================================================== */
 
 .glass-card {
-    /* Ginagawang transparent ang puti (70% opacity) */
+    /* Semi-transparent base layer for depth */
     background: rgba(255, 255, 255, 0.7);
 
-    /* Ito ang magic ng Glassmorphism: bina-blur nito ang nasa likod ng card! */
+    /* Background blur to establish the glass effect */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 
@@ -50,7 +49,7 @@ body {
     padding: 30px;
     box-shadow: 0 10px 30px rgba(13, 110, 253, 0.1);
 
-    /* Manipis na white border para magmukhang kanto ng salamin */
+    /* Subtle white border to simulate edge reflection */
     border: 1px solid rgba(255, 255, 255, 0.5);
     transition: transform 0.3s ease;
 }
@@ -60,8 +59,8 @@ body {
 }
 
 /* ==============================================================================
- * INTERACTIVE ELEMENTS (BUTTONS)
- * ============================================================================== */
+INTERACTIVE ELEMENTS (BUTTONS)
+============================================================================== */
 
 .btn-custom-blue {
     background-color: #0d6efd;
@@ -81,8 +80,8 @@ body {
 }
 
 /* ==============================================================================
- * DATA REPRESENTATION (TABLES)
- * ============================================================================== */
+DATA REPRESENTATION (TABLES)
+============================================================================== */
 
 .table-custom {
     background-color: white;
