@@ -1,10 +1,22 @@
+<!-- ======================================================================= -->
+<!-- MODULE: institution_dashboard.html                                      -->
+<!-- DESCRIPTION: Institution portal interface facilitating profile          -->
+<!-- management, direct credential issuance with skill mapping,              -->
+<!-- and a ledger for tracking awarded student badges.                       -->
+<!-- ======================================================================= -->
+
 {% extends "base.html" %} {% block content %}
 <div class="row mt-4 mb-5">
+    <!-- ========================================== -->
+    <!-- LEFT COLUMN: PROFILE & CREDENTIAL ISSUANCE -->
+    <!-- ========================================== -->
     <div class="col-lg-4">
+        <!-- --- SUB-SECTION A: Institution Profile Card --- -->
         <div
             class="glass-card mb-4 text-center shadow-sm"
             style="border-top: 5px solid #e67e22"
         >
+            <!-- Render dynamic institutional avatar using the initial character of the entity name -->
             <div
                 class="mb-3 mx-auto d-flex justify-content-center align-items-center rounded-circle shadow-sm"
                 style="
@@ -18,13 +30,17 @@
             >
                 {{ institution.institution_name[0] }}
             </div>
+
             <h4 class="fw-bold mb-1" style="color: #2c3e50">
                 {{ institution.institution_name }}
             </h4>
             <p class="text-muted small fw-bold mb-3">
                 {{ institution.email_address }}
             </p>
+
             <hr class="text-muted" />
+
+            <!-- Render institutional accreditation metadata -->
             <div class="text-start mb-2">
                 <p class="mb-1" style="font-size: 0.9rem">
                     <strong style="color: #2c3e50">Accreditation:</strong>
@@ -33,6 +49,8 @@
                     >
                 </p>
             </div>
+
+            <!-- Routing endpoint for institutional profile modification -->
             <a
                 href="/update_institution_profile"
                 class="btn btn-outline-warning w-100 fw-bold mt-2"
@@ -42,6 +60,7 @@
             </a>
         </div>
 
+        <!-- --- SUB-SECTION B: Direct Credential Issuance Form --- -->
         <div
             class="glass-card mb-4 shadow-sm"
             style="border-top: 5px solid #1e3a8a"
@@ -52,7 +71,10 @@
             <p class="text-muted small mb-3">
                 Create and award a badge to a student in one step.
             </p>
+
+            <!-- Transmits credential payload to the /issue_direct_credential endpoint -->
             <form action="/issue_direct_credential" method="POST">
+                <!-- Credential Metadata Inputs -->
                 <div class="mb-2">
                     <input
                         type="text"
@@ -85,6 +107,7 @@
                     />
                 </div>
 
+                <!-- Dynamic Skill Tagging Array -->
                 <div class="mb-3 text-start">
                     <label class="form-label text-muted fw-bold small"
                         >Map Skills to this Badge</label
@@ -97,6 +120,7 @@
                             overflow-y: auto;
                         "
                     >
+                        <!-- Iterate globally defined system skills for credential mapping -->
                         {% for skill in skills %}
                         <div class="form-check">
                             <input
@@ -118,6 +142,7 @@
 
                 <hr class="text-muted" />
 
+                <!-- Target Learner Identifier -->
                 <div class="mb-4">
                     <label class="form-label text-muted fw-bold small"
                         >Award To:</label
@@ -132,6 +157,7 @@
                     />
                 </div>
 
+                <!-- Transaction execution trigger -->
                 <button
                     type="submit"
                     class="btn text-white w-100 py-2 fw-bold"
@@ -143,7 +169,11 @@
         </div>
     </div>
 
+    <!-- ========================================== -->
+    <!-- RIGHT COLUMN: ISSUED CREDENTIALS LEDGER    -->
+    <!-- ========================================== -->
     <div class="col-lg-8">
+        <!-- --- SUB-SECTION C: Historical Issuance Directory --- -->
         <h5 class="fw-bold mb-3" style="color: #2c3e50">
             Our Issued Credentials Ledger
         </h5>
@@ -161,6 +191,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- Render tabular data of credentials previously issued by this institution -->
                     {% for issued in issued_credentials %}
                     <tr>
                         <td class="fw-bold align-middle" style="color: #2c3e50">
@@ -173,6 +204,7 @@
                             {{ issued.date_acquired }}
                         </td>
                         <td class="text-center align-middle">
+                            <!-- Target endpoint for credential revocation -->
                             <a
                                 href="/revoke_issued_credential/{{ issued.learner_credential_id }}"
                                 class="btn btn-sm btn-outline-danger shadow-sm"
@@ -183,6 +215,7 @@
                         </td>
                     </tr>
                     {% else %}
+                    <!-- Fallback UI state for an empty ledger collection -->
                     <tr>
                         <td colspan="4" class="text-center text-muted py-4">
                             No credential records found. Use the form to
