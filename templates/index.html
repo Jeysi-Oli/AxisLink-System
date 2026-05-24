@@ -1,3 +1,10 @@
+<!-- ======================================================================= -->
+<!-- MODULE: index.html (Public Landing Page)                                -->
+<!-- DESCRIPTION: Single-page application public entry point.                -->
+<!-- Implements smooth-scrolling navigation, system value propositions,      -->
+<!-- and direct routes to authentication modules.                            -->
+<!-- ======================================================================= -->
+
 <!doctype html>
 <html lang="en">
     <head>
@@ -5,22 +12,28 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>AxisLink | Empowering Careers</title>
 
+        <!-- External CSS: Bootstrap 5 UI Framework -->
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
             rel="stylesheet"
         />
 
+        <!-- Internal CSS: Application-specific styling -->
         <link
             rel="stylesheet"
             href="{{ url_for('static', filename='css/style.css') }}"
         />
 
+        <!-- ========================================== -->
+        <!-- MODULE-SPECIFIC STYLESHEET                 -->
+        <!-- ========================================== -->
         <style>
-            /* THE MAGIC TRICK: Smooth Scrolling Effect */
+            /* Core animation behavior for anchor link navigation */
             html {
                 scroll-behavior: smooth;
             }
 
+            /* Primary landing banner aesthetics and spatial distribution */
             .hero-section {
                 background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
                 color: white;
@@ -34,6 +47,8 @@
                 font-weight: 700;
                 color: #00d2ff;
             }
+
+            /* Typography state controls for standard navigation endpoints */
             .nav-link {
                 color: #2c3e50;
                 font-weight: 600;
@@ -43,6 +58,8 @@
             .nav-link:hover {
                 color: #0d6efd;
             }
+
+            /* Standardized typography for modular section headers */
             .section-title {
                 color: #1e3a8a;
                 font-weight: 700;
@@ -51,6 +68,9 @@
         </style>
     </head>
     <body>
+        <!-- ========================================== -->
+        <!-- PERSISTENT GLOBAL NAVIGATION               -->
+        <!-- ========================================== -->
         <nav
             class="navbar navbar-expand-lg navbar-light bg-white py-3 shadow-sm fixed-top"
         >
@@ -73,6 +93,7 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarNavMain">
+                    <!-- Intra-page Anchor Routing -->
                     <ul class="navbar-nav mx-auto">
                         <li class="nav-item">
                             <a class="nav-link" href="#home">Home</a>
@@ -89,7 +110,10 @@
                     </ul>
 
                     <div class="d-flex align-items-center">
+                        <!-- Session State Evaluator -->
                         {% if session.get('user_id') %}
+
+                        <!-- --- AUTHENTICATED STATE: Dynamic Avatar Dropdown --- -->
                         <div class="dropdown">
                             <button
                                 class="btn btn-white dropdown-toggle d-flex align-items-center rounded-pill px-3 py-2 shadow-sm"
@@ -140,7 +164,10 @@
                                 </li>
                             </ul>
                         </div>
+
                         {% else %}
+
+                        <!-- --- UNAUTHENTICATED STATE: Identity Provisioning --- -->
                         <a
                             href="/login"
                             class="btn btn-outline-primary fw-bold"
@@ -153,14 +180,19 @@
                             style="border-radius: 8px"
                             >Register</a
                         >
+
                         {% endif %}
                     </div>
                 </div>
             </div>
         </nav>
 
+        <!-- Spatial offset to compensate for the fixed-top navigation bar -->
         <div style="margin-top: 76px"></div>
 
+        <!-- ========================================== -->
+        <!-- HERO SECTION (Primary Engagement Focus)    -->
+        <!-- ========================================== -->
         <div id="home" class="hero-section">
             <div class="container">
                 <h1 class="hero-title mb-4">
@@ -181,6 +213,7 @@
                     top-tier companies and institutions.
                 </p>
 
+                <!-- Role-based entry point controllers -->
                 <div class="d-flex justify-content-center gap-3">
                     <a
                         href="/register"
@@ -198,6 +231,9 @@
             </div>
         </div>
 
+        <!-- ========================================== -->
+        <!-- ABOUT SECTION (System Value Proposition)   -->
+        <!-- ========================================== -->
         <div id="about" class="container" style="padding: 100px 0">
             <div class="row align-items-center">
                 <div class="col-md-6 mb-4">
@@ -235,10 +271,14 @@
             </div>
         </div>
 
+        <!-- ========================================== -->
+        <!-- FEATURES SECTION (Core System Capabilities)-->
+        <!-- ========================================== -->
         <div id="features" style="background-color: #f8f9fa; padding: 100px 0">
             <div class="container text-center">
                 <h2 class="section-title mb-5">System Capabilities</h2>
                 <div class="row">
+                    <!-- Capability Node 1: Algorithmic Matching -->
                     <div class="col-md-4 mb-4">
                         <div class="glass-card h-100">
                             <h4 class="fw-bold" style="color: #0d6efd">
@@ -251,6 +291,7 @@
                             </p>
                         </div>
                     </div>
+                    <!-- Capability Node 2: Temporal State Management -->
                     <div class="col-md-4 mb-4">
                         <div class="glass-card h-100">
                             <h4 class="fw-bold" style="color: #0d6efd">
@@ -263,6 +304,7 @@
                             </p>
                         </div>
                     </div>
+                    <!-- Capability Node 3: Infrastructure Security -->
                     <div class="col-md-4 mb-4">
                         <div class="glass-card h-100">
                             <h4 class="fw-bold" style="color: #0d6efd">
@@ -279,6 +321,9 @@
             </div>
         </div>
 
+        <!-- ========================================== -->
+        <!-- CONTACT SECTION (Administrative Routing)   -->
+        <!-- ========================================== -->
         <div
             id="contact"
             class="container text-center"
@@ -307,6 +352,9 @@
             </div>
         </div>
 
+        <!-- ========================================== -->
+        <!-- SYSTEM FOOTER                              -->
+        <!-- ========================================== -->
         <footer
             class="text-center text-muted py-4"
             style="background-color: #f0f4f8"
@@ -317,6 +365,7 @@
             >
         </footer>
 
+        <!-- External JS: Bootstrap 5 Interactive Components -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>
