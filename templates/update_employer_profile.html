@@ -1,7 +1,17 @@
+<!-- ======================================================================= -->
+<!-- MODULE: update_employer_profile.html                                    -->
+<!-- DESCRIPTION: Provides an interface for employers to update corporate    -->
+<!-- profile information, including industry sector and primary              -->
+<!-- contact details.                                                        -->
+<!-- ======================================================================= -->
+
 {% extends "base.html" %} {% block content %}
 <div class="row justify-content-center mt-4">
     <div class="col-lg-8">
         <div class="glass-card mb-5">
+            <!-- ========================================== -->
+            <!-- HEADER CONTROLS                            -->
+            <!-- ========================================== -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="fw-bold m-0" style="color: #198754">
                     Update Company Profile
@@ -14,12 +24,20 @@
                 >
             </div>
             <hr class="text-muted mb-4" />
+
+            <!-- ========================================== -->
+            <!-- DATA MUTATION FORM                         -->
+            <!-- ========================================== -->
+
+            <!-- Transmits updated employer profile payload to the /update_employer_profile endpoint -->
             <form action="/update_employer_profile" method="POST">
+                <!-- Corporate Identity Fields -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label text-muted fw-bold"
                             >Company Name</label
                         >
+                        <!-- Inject current database record into the input value -->
                         <input
                             type="text"
                             class="form-control"
@@ -41,6 +59,8 @@
                         />
                     </div>
                 </div>
+
+                <!-- Contact & Administrative Fields -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label text-muted fw-bold"
@@ -67,6 +87,8 @@
                         />
                     </div>
                 </div>
+
+                <!-- Corporate Address Field -->
                 <div class="mb-4">
                     <label class="form-label text-muted fw-bold"
                         >Company Address</label
@@ -80,6 +102,8 @@
 {{ employer.company_address }}</textarea
                     >
                 </div>
+
+                <!-- Form execution trigger -->
                 <button
                     type="submit"
                     class="btn btn-success w-100 py-2 mt-2 fw-bold"
