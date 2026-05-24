@@ -1,3 +1,10 @@
+<!-- ======================================================================= -->
+<!-- MODULE: register.html                                                   -->
+<!-- DESCRIPTION: Multi-role user registration interface. Utilizes dynamic   -->
+<!-- client-side routing to adapt form payload requirements for              -->
+<!-- Learners, Employers, and Institutions.                                  -->
+<!-- ======================================================================= -->
+
 {% extends "base.html" %} {% block content %}
 <div class="row justify-content-center mt-5">
     <div class="col-md-5">
@@ -5,7 +12,12 @@
             <h3 class="fw-bold mb-1" style="color: #1e3a8a">Join AxisLink</h3>
             <p class="text-muted mb-4">Create your account to get started.</p>
 
+            <!-- ========================================== -->
+            <!-- REGISTRATION PAYLOAD FORM                  -->
+            <!-- ========================================== -->
+
             <form action="/register" method="POST">
+                <!-- Base authentication credentials required for all entity types -->
                 <div class="mb-3 text-start">
                     <label class="form-label fw-bold" style="color: #2c3e50"
                         >Email Address</label
@@ -34,6 +46,11 @@
                     />
                 </div>
 
+                <!-- ========================================== -->
+                <!-- CONDITIONAL ROLE SELECTION                 -->
+                <!-- ========================================== -->
+
+                <!-- Role selection dropdown: Dictates conditional rendering of subsequent fields -->
                 <div class="mb-4 text-start">
                     <label class="form-label fw-bold" style="color: #2c3e50"
                         >I want to register as a:</label
@@ -60,6 +77,11 @@
                     </select>
                 </div>
 
+                <!-- ========================================== -->
+                <!-- DYNAMIC ENTITY FIELDS                      -->
+                <!-- ========================================== -->
+
+                <!-- Identity Sub-Form: Learner Data -->
                 <div
                     id="learnerFields"
                     class="d-none text-start mb-4 p-3"
@@ -98,6 +120,7 @@
                     </div>
                 </div>
 
+                <!-- Identity Sub-Form: Employer Data -->
                 <div
                     id="employerFields"
                     class="d-none text-start mb-4 p-3"
@@ -124,6 +147,7 @@
                     </div>
                 </div>
 
+                <!-- Identity Sub-Form: Institution Data -->
                 <div
                     id="institutionFields"
                     class="d-none text-start mb-4 p-3"
@@ -150,6 +174,7 @@
                     </div>
                 </div>
 
+                <!-- Registration execution trigger -->
                 <button
                     type="submit"
                     class="btn btn-custom-blue w-100 py-2 mb-3"
@@ -159,6 +184,10 @@
             </form>
 
             <hr class="text-muted" />
+
+            <!-- ========================================== -->
+            <!-- AUTHENTICATION REDIRECT                    -->
+            <!-- ========================================== -->
 
             <p class="mb-0" style="font-size: 0.9rem">
                 Already have an account?
@@ -176,7 +205,16 @@
     </div>
 </div>
 
+<!-- ======================================================================= -->
+<!-- CLIENT-SIDE LOGIC                                                       -->
+<!-- ======================================================================= -->
+
 <script>
+    /**
+     * Event listener bound to the role selection dropdown.
+     * Dynamically resets and conditionally applies visibility classes
+     * and HTML5 validation attributes based on the selected identity.
+     */
     document
         .getElementById('roleSelector')
         .addEventListener('change', function () {
@@ -192,18 +230,18 @@
             var compName = document.getElementById('compName');
             var instName = document.getElementById('instName');
 
-            // Reset visibility
+            // Global State Reset: Ensure all sub-forms are hidden by default
             learnerBox.classList.add('d-none');
             employerBox.classList.add('d-none');
             instBox.classList.add('d-none');
 
-            // Reset required attributes
+            // Global Validation Reset: Remove required constraints to prevent hidden form submission errors
             fName.required = false;
             lName.required = false;
             compName.required = false;
             instName.required = false;
 
-            // Apply rules based on selection
+            // Apply visibility and validation rules based on the active selection
             if (role === 'Learner') {
                 learnerBox.classList.remove('d-none');
                 fName.required = true;
