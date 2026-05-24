@@ -1,6 +1,7 @@
 # ==============================================================================
 # MODULE: app.py
-# DESCRIPTION: Final Master File for AxisLink (Unified Direct Issuance Update)
+# DESCRIPTION: Core application routing and controller logic for the AxisLink platform.
+# Handles user authentication, session management, and role-based ecosystem.  
 # ==============================================================================
 
 from flask import Flask, render_template, request, redirect, url_for, session
@@ -10,6 +11,7 @@ import mysql.connector
 app = Flask(__name__)
 app.secret_key = 'axislink_super_secret_key'
 
+# Global database configuration dictionary
 db_config = {
     'host': 'localhost',
     'user': 'axislink_admin', 
@@ -23,10 +25,15 @@ db_config = {
 
 @app.route('/')
 def home():
+    """Renders the public landing portal for the AxisLink platform."""
     return render_template('index.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Authenticates user credentials against the database.
+    Initializes session state and routes the user to their designated role-based dashboard.
+    """
     error_message = None
     if request.method == 'POST':
         form_email = request.form['email']
@@ -39,11 +46,13 @@ def login():
         cursor.execute(sql_account, (form_email,))
         account = cursor.fetchone()
         
+        # Validate existence and verify cryptographic password hash
         if account and check_password_hash(account['password_hash'], form_password):
             role = account['role_type']
             session['role'] = role
             session['account_id'] = account['account_id']
             
+            # Delegate routing based on strict role authorization
             if role == 'Admin':
                 session['admin_id'] = account['account_id']
                 session['user_id'] = 'System Administrator'
@@ -60,6 +69,8 @@ def login():
                     f_name = learner_data['first_name']
                     m_name = learner_data['middle_name']
                     l_name = learner_data['last_name']
+                    
+                    # Format session display name securely
                     if m_name and m_name.strip() != '':
                         session['user_id'] = f"{f_name} {m_name.strip()[0].upper()}. {l_name}"
                     else:
@@ -92,12 +103,17 @@ def login():
             
         else:
             error_message = "Invalid email or password. Please try again."
+            
         cursor.close()
         connection.close()
     return render_template('login.html', error=error_message)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    """
+    Registers a new user account with cryptographic hashing.
+    Allocates corresponding role-specific profile records with default placeholder data.
+    """
     if request.method == 'POST':
         form_email = request.form['email']
         form_password = request.form['password']
@@ -108,10 +124,12 @@ def register():
         cursor = connection.cursor()
         
         try:
+            # Insert primary authentication record
             sql_account = "INSERT INTO tbl_user_account (email_address, password_hash, role_type, account_status) VALUES (%s, %s, %s, 'Active')"
             cursor.execute(sql_account, (form_email, hashed_password, form_role))
             new_account_id = cursor.lastrowid
             
+            # Scaffold corresponding role sub-tables
             if form_role == 'Learner':
                 form_fname = request.form.get('first_name')
                 form_lname = request.form.get('last_name')
@@ -148,10 +166,12 @@ def register():
             cursor.close()
             connection.close()
         return redirect(url_for('login'))
+        
     return render_template('register.html')
 
 @app.route('/logout')
 def logout():
+    """Terminates user session and purges cached credentials."""
     session.clear()
     return redirect(url_for('home'))
 
@@ -161,6 +181,10 @@ def logout():
 
 @app.route('/employer')
 def employer_dashboard():
+    """
+    Compiles employer dashboard views, fetching active job postings
+    and calculating real-time candidate matches based on public credentials.
+    """
     if 'role' not in session or session.get('role') != 'Employer':
         return redirect(url_for('login'))
 
@@ -186,6 +210,7 @@ def employer_dashboard():
     cursor.execute("SELECT * FROM tbl_skill ORDER BY skill_category, skill_name")
     master_skills = cursor.fetchall()
 
+    # Retrieve learner pools matched against active employer job requirements
     cursor.execute("""
         SELECT DISTINCT learner.learner_id, job.job_id, employer.company_name AS company,
             job.job_title AS position, learner.first_name AS f_name, learner.middle_name AS m_name, learner.last_name AS l_name
@@ -205,6 +230,7 @@ def employer_dashboard():
 
 @app.route('/update_employer_profile', methods=['GET', 'POST'])
 def update_employer_profile():
+    """Updates organizational meta-data for the employer entity."""
     if 'role' not in session or session.get('role') != 'Employer':
         return redirect(url_for('login'))
         
@@ -238,6 +264,7 @@ def update_employer_profile():
 
 @app.route('/add_job', methods=['POST'])
 def add_job():
+    """Records a new job posting and standardizes required skill mappings."""
     if 'employer_id' not in session:
         return redirect(url_for('login'))
     
@@ -253,6 +280,7 @@ def add_job():
                    (session.get('employer_id'), form_job_title, form_job_desc, form_emp_type))
     new_job_id = cursor.lastrowid 
     
+    # Establish junction table constraints for required skills
     for skill_id in selected_skills:
         cursor.execute("INSERT INTO tbl_job_skill (job_id, skill_id) VALUES (%s, %s)", (new_job_id, skill_id))
         
@@ -263,6 +291,7 @@ def add_job():
 
 @app.route('/delete_job/<int:job_id>')
 def delete_job(job_id):
+    """Executes a cascading deletion of a job posting and its associated skill mappings."""
     if 'role' not in session or session.get('role') != 'Employer':
         return redirect(url_for('login'))
     connection = mysql.connector.connect(**db_config)
@@ -276,15 +305,21 @@ def delete_job(job_id):
 
 @app.route('/calculate_gap', methods=['POST'])
 def calculate_gap():
+    """
+    Invokes the backend Stored Procedure 'sp_calculate_skill_gap' 
+    to programmatically determine applicant alignment percentage.
+    """
     if 'role' not in session or session.get('role') != 'Employer':
         return redirect(url_for('login'))
     form_learner_id = request.form['learner_id']
     form_job_id = request.form['job_id']
     learner_full_name = request.form['learner_name']
     job_position = request.form['job_title']
+    
     connection = mysql.connector.connect(**db_config)
     cursor = connection.cursor()
     try:
+        # Pass parameters and extract scalar output from stored procedure
         cursor.execute("CALL sp_calculate_skill_gap(%s, %s, @match_percentage)", (form_learner_id, form_job_id))
         cursor.execute("SELECT @match_percentage")
         result = cursor.fetchone()
@@ -296,6 +331,7 @@ def calculate_gap():
 
 @app.route('/view_learner/<int:learner_id>')
 def view_learner(learner_id):
+    """Retrieves standard profile attributes and public credential portfolios for a target learner."""
     if 'role' not in session or session.get('role') != 'Employer':
         return redirect(url_for('login'))
     connection = mysql.connector.connect(**db_config)
@@ -323,6 +359,10 @@ def view_learner(learner_id):
 
 @app.route('/learner')
 def learner_dashboard():
+    """
+    Renders the primary environment for learners, displaying personal data,
+    available job market aggregates, and the private credential vault.
+    """
     if 'role' not in session or session.get('role') != 'Learner':
         return redirect(url_for('login'))
 
@@ -363,6 +403,7 @@ def learner_dashboard():
 
 @app.route('/update_profile', methods=['GET', 'POST'])
 def update_profile():
+    """Commits modifications to demographic and personal data for the learner entity."""
     if 'role' not in session or session.get('role') != 'Learner':
         return redirect(url_for('login'))
 
@@ -390,6 +431,7 @@ def update_profile():
         """, (f_name, m_name, l_name, dob, gender, nationality, contact, education, address, current_learner_id))
         connection.commit()
         
+        # Dynamically refresh session display name
         if m_name and m_name.strip() != '':
             session['user_id'] = f"{f_name} {m_name.strip()[0].upper()}. {l_name}"
         else:
@@ -409,6 +451,10 @@ def update_profile():
 
 @app.route('/toggle_visibility/<int:lc_id>')
 def toggle_visibility(lc_id):
+    """
+    Alters the public/private state of a specific learner credential, 
+    granting or restricting employer parsing capabilities.
+    """
     if 'role' not in session or session.get('role') != 'Learner':
         return redirect(url_for('login'))
     connection = mysql.connector.connect(**db_config)
@@ -429,6 +475,10 @@ def toggle_visibility(lc_id):
 
 @app.route('/institution')
 def institution_dashboard():
+    """
+    Renders the institution management portal, logging all cryptographic
+    badges issued to external learners.
+    """
     if 'role' not in session or session.get('role') != 'Institution':
         return redirect(url_for('login'))
 
@@ -462,6 +512,7 @@ def institution_dashboard():
 
 @app.route('/update_institution_profile', methods=['GET', 'POST'])
 def update_institution_profile():
+    """Maintains organizational records and accreditation metrics for the institution."""
     if 'role' not in session or session.get('role') != 'Institution':
         return redirect(url_for('login'))
         
@@ -496,6 +547,11 @@ def update_institution_profile():
 # UNIFIED ROUTE: DIRECT ISSUANCE
 @app.route('/issue_direct_credential', methods=['POST'])
 def issue_direct_credential():
+    """
+    Processes the complete end-to-end issuance of a digital credential.
+    Validates recipient email, defines credential parameters, assigns skill mappings,
+    and directly provisions the asset to the learner's private vault.
+    """
     if 'role' not in session or session.get('role') != 'Institution':
         return redirect(url_for('login'))
 
@@ -508,6 +564,7 @@ def issue_direct_credential():
     connection = mysql.connector.connect(**db_config)
     cursor = connection.cursor(dictionary=True)
     
+    # Authenticate target recipient via exact email match
     cursor.execute("""
         SELECT l.learner_id FROM tbl_learner l
         JOIN tbl_user_account a ON l.account_id = a.account_id WHERE a.email_address = %s
@@ -515,13 +572,16 @@ def issue_direct_credential():
     learner = cursor.fetchone()
 
     if learner:
+        # Step 1: Register the core credential entity
         cursor.execute("INSERT INTO tbl_credential (institution_id, credential_name, credential_description, validity_years) VALUES (%s, %s, %s, %s)", 
                        (session.get('institution_id'), form_name, form_desc, form_validity))
         new_cred_id = cursor.lastrowid 
         
+        # Step 2: Bind modular skills to the generated credential
         for skill_id in selected_skills:
             cursor.execute("INSERT INTO tbl_credential_skill (credential_id, skill_id) VALUES (%s, %s)", (new_cred_id, skill_id))
 
+        # Step 3: Issue final credential into learner vault with dynamic expiration handling
         cursor.execute("""
             INSERT INTO tbl_learner_credential (learner_id, credential_id, date_acquired, expiration_date, credential_status, visibility_status)
             VALUES (%s, %s, CURDATE(), IF(%s = 0, '2099-12-31', DATE_ADD(CURDATE(), INTERVAL %s YEAR)), 'ACTIVE', 'Private')
@@ -535,6 +595,7 @@ def issue_direct_credential():
 
 @app.route('/revoke_issued_credential/<int:lc_id>')
 def revoke_issued_credential(lc_id):
+    """Executes a hard deletion of an issued credential, removing it from the learner's ecosystem."""
     if 'role' not in session or session.get('role') != 'Institution':
         return redirect(url_for('login'))
         
@@ -552,6 +613,11 @@ def revoke_issued_credential(lc_id):
 
 @app.route('/delete_account', methods=['POST'])
 def delete_account():
+    """
+    Safely executes a full account lifecycle purge.
+    Implements cascading deletion logic strictly tailored to the user's role 
+    to prevent orphan records and maintain global database integrity.
+    """
     if 'account_id' not in session:
         return redirect(url_for('login'))
 
@@ -562,6 +628,7 @@ def delete_account():
     cursor = connection.cursor()
     
     try:
+        # Resolve specific foreign key dependencies before purging parent records
         if role == 'Learner':
             learner_id = session.get('learner_id')
             cursor.execute("DELETE FROM tbl_learner_credential WHERE learner_id = %s", (learner_id,))
@@ -580,6 +647,7 @@ def delete_account():
             cursor.execute("DELETE FROM tbl_credential WHERE institution_id = %s", (inst_id,))
             cursor.execute("DELETE FROM tbl_institution WHERE account_id = %s", (account_id,))
         
+        # Purge master authentication profile
         cursor.execute("DELETE FROM tbl_user_account WHERE account_id = %s", (account_id,))
         connection.commit()
         
@@ -595,6 +663,7 @@ def delete_account():
 
 @app.route('/admin')
 def admin_dashboard():
+    """Placeholder view for future administrative portal."""
     if 'role' not in session or session.get('role') != 'Admin':
         return redirect(url_for('login'))
     return "<h1>Admin Dashboard (Under Construction)</h1><a href='/logout'>Logout</a>"
