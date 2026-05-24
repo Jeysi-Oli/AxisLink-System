@@ -1,3 +1,9 @@
+<!-- ======================================================================= -->
+<!-- MODULE: base.html (Enhanced Master Template)                            -->
+<!-- DESCRIPTION: Foundational layout template establishing global UI state, -->
+<!-- dependency management, and session-aware navigation.                    -->
+<!-- ======================================================================= -->
+
 <!doctype html>
 <html lang="en">
     <head>
@@ -5,19 +11,29 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>AxisLink | Dashboard</title>
 
+        <!-- ========================================== -->
+        <!-- GLOBAL STYLESHEET DEPENDENCIES             -->
+        <!-- ========================================== -->
+
+        <!-- External CSS: Bootstrap 5 UI Framework -->
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
             rel="stylesheet"
         />
 
+        <!-- Internal CSS: Application-specific styling -->
         <link
             rel="stylesheet"
             href="{{ url_for('static', filename='css/style.css') }}"
         />
     </head>
     <body>
+        <!-- ========================================== -->
+        <!-- PRIMARY NAVIGATION CONTROLLER              -->
+        <!-- ========================================== -->
         <nav class="navbar navbar-expand-lg navbar-dark navbar-custom mb-4">
             <div class="container">
+                <!-- System Branding -->
                 <a
                     class="navbar-brand fw-bold"
                     href="/"
@@ -26,6 +42,7 @@
                     ⚡ AxisLink
                 </a>
 
+                <!-- Mobile Viewport Toggler -->
                 <button
                     class="navbar-toggler"
                     type="button"
@@ -37,7 +54,14 @@
 
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <div class="ms-auto text-white d-flex align-items-center">
+                        <!-- ========================================== -->
+                        <!-- SESSION-AWARE UI RENDERING                 -->
+                        <!-- ========================================== -->
+
+                        <!-- Evaluate active session state -->
                         {% if session.get('user_id') %}
+
+                        <!-- --- AUTHENTICATED STATE: User Dropdown --- -->
                         <div class="dropdown">
                             <button
                                 class="btn btn-light dropdown-toggle d-flex align-items-center rounded-pill px-3 py-1 shadow-sm"
@@ -46,6 +70,7 @@
                                 aria-expanded="false"
                                 style="border: none"
                             >
+                                <!-- Dynamic Avatar: Extracts the first character of the user's identifier -->
                                 <div
                                     class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center me-2"
                                     style="
@@ -68,6 +93,7 @@
                                 class="dropdown-menu dropdown-menu-end shadow border-0"
                                 style="border-radius: 12px; margin-top: 10px"
                             >
+                                <!-- Dynamic Routing: Directs user to their role-specific module -->
                                 <li>
                                     <a
                                         class="dropdown-item fw-bold py-2"
@@ -78,6 +104,7 @@
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider" /></li>
+                                <!-- Session Termination -->
                                 <li>
                                     <a
                                         class="dropdown-item text-danger fw-bold py-2"
@@ -88,7 +115,10 @@
                                 </li>
                             </ul>
                         </div>
+
                         {% else %}
+
+                        <!-- --- UNAUTHENTICATED STATE: Guest Controls --- -->
                         <a
                             href="/login"
                             class="btn btn-sm btn-outline-light fw-bold"
@@ -105,14 +135,25 @@
                             "
                             >Register</a
                         >
+
                         {% endif %}
                     </div>
                 </div>
             </div>
         </nav>
 
+        <!-- ========================================== -->
+        <!-- DYNAMIC CONTENT INJECTION POINT            -->
+        <!-- ========================================== -->
+
+        <!-- Container for rendering extended child templates -->
         <div class="container">{% block content %} {% endblock %}</div>
 
+        <!-- ========================================== -->
+        <!-- GLOBAL SCRIPT DEPENDENCIES                 -->
+        <!-- ========================================== -->
+
+        <!-- External JS: Bootstrap 5 Interactive Components (Dropdowns, Modals) -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>
